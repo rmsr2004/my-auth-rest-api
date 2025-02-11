@@ -172,3 +172,8 @@ cython_debug/
 
 # logging files
 *.log
+
+# ssl files
+ssl/
+*.crt
+*.key
