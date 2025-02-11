@@ -1,6 +1,8 @@
 from fastapi import Request
 import sqlite3
 import bcrypt
+import traceback
+
 from globals import logger, status_codes
 
 ENDPOINT = 'POST /register'
@@ -51,7 +53,10 @@ async def register(request: Request):
     except (Exception, sqlite3.Error) as error:
         conn.rollback()
 
-        logger.error(f'{ENDPOINT} - error: {error}')
+        error_message = traceback.format_exc()
+
+        logger.error(f'{ENDPOINT} - error: {error_message}')
+
         response = {'status': status_codes['api_error'], 'errors': str(error), 'results': None}
         
     finally:

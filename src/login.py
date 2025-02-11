@@ -1,6 +1,7 @@
 from fastapi import Request
 import sqlite3
 import bcrypt
+import traceback
 
 from globals import logger, status_codes
 from auth_jwt import create_token
@@ -37,12 +38,14 @@ async def login(request: Request):
     try:
         cur.execute(statement, values)
 
-        user_id, password = cur.fetchone()
+        result = cur.fetchone()
 
-        if password is None:
-            raise Exception('Invalid username or password')
+        if result is None:
+            raise Exception('Invalid username')
+        
+        user_id, password = result
 
-        if bcrypt.checkpw(payload['password'].encode('utf-8'), password):
+        if bcrypt.checkpw(payload['password'].encode('utf-8'), password.encode('utf-8')):
             jwt_token = create_token({'id': int(user_id)})
             response = {'status': status_codes['success'], 'errors': None, 'results': jwt_token}
         else:
@@ -53,7 +56,10 @@ async def login(request: Request):
     except (Exception, sqlite3.Error) as error:
         conn.rollback()
 
-        logger.error(f'{ENDPOINT} - error: {str(error)}')
+        error_message = traceback.format_exc()
+
+        logger.error(f'{ENDPOINT} - error: {error_message}')
+
         response = {'status': status_codes['api_error'], 'errors': str(error), 'results': None}
     
     finally:
