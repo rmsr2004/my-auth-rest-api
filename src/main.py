@@ -6,6 +6,7 @@ from register import register
 from add_app import add_app
 from get_apps import get_apps
 from verify_device import verify_device
+from add_device import add_device
 
 app = FastAPI()
 
@@ -29,8 +30,12 @@ async def add_app_endpoint(request: Request, token: str = Depends(validate_token
 async def get_apps_endpoint(token: str = Depends(validate_token)):
     return await get_apps(token)
 
-@app.put('auth/verify_device')
-async def verify_device_endpoint(request: Request, token: str = Depends(validate_token)):
-    return await verify_device(request, token)
+@app.post('/auth/add_device')
+async def add_device_endpoint(request: Request, token: str = Depends(validate_token)):
+    return await add_device(request, token)
+
+@app.get('/auth/verify_device/{user_id}/{device_id}')
+async def verify_device_endpoint(user_id: str, device_id: str):
+    return await verify_device(user_id, device_id)
 
 # end of main.py
