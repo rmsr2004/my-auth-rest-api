@@ -27,6 +27,18 @@ def create_db():
                 FOREIGN KEY (user_id) REFERENCES users(id)
             );
         ''')
+
+        cur.execute('''
+            DROP TABLE IF EXISTS devices;
+        ''')
+        cur.execute('''
+            CREATE TABLE devices (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id     INTEGER NOT NULL,
+                device_id   TEXT(512) NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            );
+        ''')
         
         conn.commit()
         
@@ -34,6 +46,8 @@ def create_db():
 
 if __name__ == '__main__':
     create_db()
+    print('-'*50)
     print('Database created successfully!')
+    print('-'*50)
 
 # end of create_db.py
