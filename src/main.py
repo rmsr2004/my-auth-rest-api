@@ -5,6 +5,7 @@ from login import login
 from register import register
 from add_app import add_app
 from get_apps import get_apps
+from verify_device import verify_device
 
 app = FastAPI()
 
@@ -27,5 +28,9 @@ async def add_app_endpoint(request: Request, token: str = Depends(validate_token
 @app.get('/auth/get_apps')
 async def get_apps_endpoint(token: str = Depends(validate_token)):
     return await get_apps(token)
+
+@app.put('auth/verify_device')
+async def verify_device_endpoint(request: Request, token: str = Depends(validate_token)):
+    return await verify_device(request, token)
 
 # end of main.py

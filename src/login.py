@@ -3,7 +3,7 @@ import sqlite3
 import bcrypt
 import traceback
 
-from globals import logger, status_codes
+from utils import logger, status_codes
 from auth_jwt import create_token
 
 ENDPOINT = 'PUT /login'

@@ -3,7 +3,7 @@ import jwt
 import datetime
 import secrets
 
-from globals import oauth2_scheme
+from utils import oauth2_scheme
 
 SECRET_KEY = secrets.token_hex(64)  # Generate a random secret key to encode/decode JWT tokens
 ALGORITHM = 'HS256'                 # Algorithm to encode/decode JWT tokens

@@ -2,7 +2,7 @@ from fastapi import Request
 import sqlite3
 import traceback
 
-from globals import logger, status_codes
+from utils import logger, status_codes
 
 ENDPOINT = 'POST /auth/add_app'
 

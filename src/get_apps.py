@@ -1,7 +1,7 @@
 import sqlite3
 import traceback
 
-from globals import logger, status_codes
+from utils import logger, status_codes
 
 ENDPOINT = 'GET /auth/get_apps'
 
