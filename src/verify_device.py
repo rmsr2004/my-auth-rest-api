@@ -21,7 +21,7 @@ async def verify_device(user_id: str, device_id: str):
         result = cur.fetchone()
 
         if result is None:
-            raise Exception('Device not found')
+            response = {'status': status_codes['success'], 'errors': None, 'results': False}
         else:
             response = {'status': status_codes['success'], 'errors': None, 'results': True}
 
