@@ -6,11 +6,13 @@ from utils import logger, status_codes
 
 ENDPOINT = 'GET /auth/generate_tokens'
 
-async def generate_tokens(user_id: str, device_id: str):
+async def generate_tokens(device_id: str, token):
     logger.info(f'{ENDPOINT}/{user_id}/{device_id}')
 
     conn = sqlite3.connect("../db/db.db", check_same_thread=False)
     cur = conn.cursor()
+
+    user_id = token['data']['id']
 
     statement = '''
         SELECT 1 FROM devices WHERE user_id = ? AND device_id = ?;

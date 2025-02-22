@@ -48,8 +48,8 @@ async def add_device_endpoint(request: Request, token: str = Depends(validate_to
 async def verify_device_endpoint(device_id: str):
     return await verify_device(device_id)
 
-@app.get('/auth/generate_tokens/{user_id}/{device_id}')
-async def generate_tokens_endpoint(user_id: str, device_id: str):
-    return await generate_tokens(user_id, device_id)
+@app.get('/auth/generate_tokens/{device_id}')
+async def generate_tokens_endpoint(device_id: str, token: str = Depends(validate_token)):
+    return await generate_tokens(device_id, token)
 
 # end of main.py
