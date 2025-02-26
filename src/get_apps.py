@@ -23,7 +23,7 @@ async def get_apps(token):
         results = cur.fetchall()
 
         if not results:
-            raise Exception('No secrets found')
+            return {'status': status_codes['not_found'], 'errors': None, 'results': []}
 
         response = {'status': status_codes['success'], 'errors': None, 'results': results}
 

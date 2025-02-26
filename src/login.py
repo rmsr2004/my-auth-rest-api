@@ -41,7 +41,7 @@ async def login(request: Request):
         result = cur.fetchone()
 
         if result is None:
-            raise Exception('Invalid username')
+            return {'status': status_codes['not_found'], 'errors': 'User not found', 'results': None}
         
         user_id, password = result
 
@@ -49,7 +49,7 @@ async def login(request: Request):
             jwt_token = create_token({'id': int(user_id)})
             response = {'status': status_codes['success'], 'errors': None, 'results': jwt_token}
         else:
-            raise Exception('Invalid password')
+            return {'status': status_codes['not_found'], 'errors': 'Incorrect password', 'results': None}
         
         conn.commit()
     

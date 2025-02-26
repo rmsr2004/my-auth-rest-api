@@ -7,7 +7,7 @@ from utils import logger, status_codes
 ENDPOINT = 'GET /auth/generate_tokens'
 
 async def generate_tokens(device_id: str, token):
-    logger.info(f'{ENDPOINT}/{user_id}/{device_id}')
+    logger.info(f'{ENDPOINT}/{device_id}')
 
     conn = sqlite3.connect("../db/db.db", check_same_thread=False)
     cur = conn.cursor()
@@ -35,7 +35,7 @@ async def generate_tokens(device_id: str, token):
         results = cur.fetchall()
 
         if not results:
-            raise Exception('No secrets found')
+            return {'status': status_codes['success'], 'errors': None, 'results': []}
         
         tokens = []
         
@@ -52,7 +52,7 @@ async def generate_tokens(device_id: str, token):
     except (Exception, sqlite3.Error) as error:
         error_message = traceback.format_exc()
 
-        logger.error(f'{ENDPOINT}/{user_id}/{device_id} - error: {error_message}')
+        logger.error(f'{ENDPOINT}/{device_id} - error: {error_message}')
 
         response = {'status': status_codes['api_error'], 'errors': str(error), 'results': None}
 

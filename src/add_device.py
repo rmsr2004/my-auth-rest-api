@@ -26,7 +26,6 @@ async def add_device(request: Request, token):
     '''
     values = (token['data']['id'], payload['device_id'],)
 
-
     try:
         cur.execute(statement, values)
         result = cur.fetchone()
