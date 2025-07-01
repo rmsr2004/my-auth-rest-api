@@ -1,4 +1,4 @@
-package com.myauth.api.exception.custom;
+package com.myauth.api.exceptions.custom;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException(String message) {

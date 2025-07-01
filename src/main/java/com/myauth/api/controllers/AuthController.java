@@ -1,15 +1,15 @@
-package com.myauth.api.controller;
+package com.myauth.api.controllers;
 
 import java.util.Optional;
 
-import com.myauth.api.dto.login.LoginRequestDto;
-import com.myauth.api.dto.login.LoginResponseDto;
-import com.myauth.api.dto.register.RegisterRequestDto;
-import com.myauth.api.dto.register.RegisterResponseDto;
-import com.myauth.api.exception.custom.UserAlreadyExistsException;
-import com.myauth.api.exception.custom.UserUnauthorizedException;
-import com.myauth.api.model.Device;
-import com.myauth.api.repository.DeviceRepository;
+import com.myauth.api.dtos.login.LoginRequestDto;
+import com.myauth.api.dtos.login.LoginResponseDto;
+import com.myauth.api.dtos.register.RegisterRequestDto;
+import com.myauth.api.dtos.register.RegisterResponseDto;
+import com.myauth.api.exceptions.custom.UserAlreadyExistsException;
+import com.myauth.api.exceptions.custom.UserUnauthorizedException;
+import com.myauth.api.entities.Device;
+import com.myauth.api.repositories.DeviceRepository;
 import jdk.jshell.spi.ExecutionControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-import com.myauth.api.exception.custom.UserNotFoundException;
-import com.myauth.api.model.User;
-import com.myauth.api.repository.UserRepository;
+import com.myauth.api.exceptions.custom.UserNotFoundException;
+import com.myauth.api.entities.User;
+import com.myauth.api.repositories.UserRepository;
 import com.myauth.api.security.TokenService;
 
 @RestController
@@ -57,18 +57,18 @@ public class AuthController {
             throw new UserNotFoundException("User not found");
         }
 
+        if (!passwordEncoder.matches(body.password(), user.get().getPassword())) {
+            throw new UserUnauthorizedException("Wrong password");
+        }
+
         Device device = new Device();
         device.setUser(user.get());
 
         String deviceId = deviceRepository.save(device).getId();
-        String token;
 
-        if (passwordEncoder.matches(body.password(), user.get().getPassword())) {
-            token = jwtService.generateToken(user.get().getId(), deviceId);
-            return ResponseEntity.ok(new LoginResponseDto(token));
-        } else {
-            throw new UserUnauthorizedException("Incorrect credentials");
-        }
+        String token = jwtService.generateToken(user.get().getId(), deviceId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDto(token));
     }
 
     @PostMapping("/register")

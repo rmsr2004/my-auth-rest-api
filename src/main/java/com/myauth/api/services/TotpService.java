@@ -1,4 +1,4 @@
-package com.myauth.api.service;
+package com.myauth.api.services;
 
 import com.eatthepath.otp.TimeBasedOneTimePasswordGenerator;
 import org.apache.commons.codec.binary.Base32;

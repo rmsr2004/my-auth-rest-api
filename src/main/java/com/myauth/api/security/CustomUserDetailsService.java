@@ -1,7 +1,7 @@
 package com.myauth.api.security;
 
-import com.myauth.api.model.User;
-import com.myauth.api.repository.UserRepository;
+import com.myauth.api.entities.User;
+import com.myauth.api.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

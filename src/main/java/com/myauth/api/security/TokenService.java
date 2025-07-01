@@ -15,7 +15,7 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expiration}")
-    private int expiration;
+    private long expiration;
     private SecretKey key;
 
     @PostConstruct
@@ -23,41 +23,33 @@ public class TokenService {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String userID) {
+    public String generateToken(Long userId, String deviceId) {
         return Jwts.builder()
-                .setSubject(userID)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + expiration))
+                .claim("deviceId", deviceId)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String getIDFromToken(String token) {
-        if (token == null) {
-            return null;
-        }
-
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key).build()
-                    .parseClaimsJws(token).getBody().getSubject();
-        } catch (JwtException e) {
-            return null;
-        }
-    }
-
     public TokenValidation validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return new TokenValidation(true, "");
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return new TokenValidation(true, "", claims);
         } catch (SecurityException e) {
-            return new TokenValidation(false, "Invalid JWT signature");
+            return new TokenValidation(false, "Invalid JWT signature", null);
         } catch (MalformedJwtException | IllegalArgumentException e) {
-            return new TokenValidation(false, "Invalid JWT token");
+            return new TokenValidation(false, "Invalid JWT token", null);
         } catch (ExpiredJwtException e) {
-            return new TokenValidation(false, "Expired JWT token");
+            return new TokenValidation(false, "Expired JWT token", null);
         } catch (UnsupportedJwtException e) {
-            return new TokenValidation(false, "Unsupported JWT token");
+            return new TokenValidation(false, "Unsupported JWT token", null);
         }
     }
 }

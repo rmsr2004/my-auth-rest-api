@@ -1,9 +1,10 @@
-package com.myauth.api.exception.handler;
+package com.myauth.api.exceptions.handler;
 
-import com.myauth.api.dto.error.ErrorDto;
-import com.myauth.api.exception.custom.UserAlreadyExistsException;
-import com.myauth.api.exception.custom.UserNotFoundException;
-import com.myauth.api.exception.custom.UserUnauthorizedException;
+import com.myauth.api.dtos.device.DeviceNotFoundException;
+import com.myauth.api.dtos.error.ErrorDto;
+import com.myauth.api.exceptions.custom.UserAlreadyExistsException;
+import com.myauth.api.exceptions.custom.UserNotFoundException;
+import com.myauth.api.exceptions.custom.UserUnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ErrorDto(
                         OffsetDateTime.now().toString(),
-                        404,
+                        HttpStatus.NOT_FOUND.value(),
                         "Not Found",
                         ex.getMessage(),
                         request.getRequestURI()
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ErrorDto(
                         OffsetDateTime.now().toString(),
-                        401,
+                        HttpStatus.UNAUTHORIZED.value(),
                         "Unauthorized",
                         ex.getMessage(),
                         request.getRequestURI()
@@ -47,10 +48,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 new ErrorDto(
                         OffsetDateTime.now().toString(),
-                        409,
+                        HttpStatus.CONFLICT.value(),
                         "Conflict",
                         ex.getMessage(),
                         request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleDeviceNotFoundException(DeviceNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ErrorDto(
+                        OffsetDateTime.now().toString(),
+                        HttpStatus.NOT_FOUND.value(),
+                        "Not Found",
+                        ex.getMessage(),
+                        request.getRequestURI()
+
                 )
         );
     }
@@ -64,7 +79,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(
                 new ErrorDto(
                         OffsetDateTime.now().toString(),
-                        400,
+                        HttpStatus.BAD_REQUEST.value(),
                         "Bad Request",
                         errorMessage,
                         request.getRequestURI()

@@ -1,7 +1,7 @@
-package com.myauth.api.repository;
+package com.myauth.api.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.myauth.api.model.User;
+import com.myauth.api.entities.User;
 
 import java.util.Optional;
 

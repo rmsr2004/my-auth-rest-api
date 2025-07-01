@@ -1,4 +1,7 @@
 package com.myauth.api.dtos.device;
 
-public class DeviceNotFound {
+public class DeviceNotFoundException extends Exception {
+    public DeviceNotFoundException(String message) {
+        super(message);
+    }
 }

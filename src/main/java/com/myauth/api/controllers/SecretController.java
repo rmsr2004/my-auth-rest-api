@@ -1,15 +1,15 @@
-package com.myauth.api.controller;
+package com.myauth.api.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import com.myauth.api.model.User;
-import com.myauth.api.model.Secret;
-import com.myauth.api.repository.SecretRepository;
-import com.myauth.api.dto.secret.SecretRequestDto;
-import com.myauth.api.dto.secret.SecretResponseDto;
+import com.myauth.api.entities.User;
+import com.myauth.api.entities.Secret;
+import com.myauth.api.repositories.SecretRepository;
+import com.myauth.api.dtos.secret.SecretRequestDto;
+import com.myauth.api.dtos.secret.SecretResponseDto;
 
 @RestController
 @RequestMapping("/api/auth/secrets")

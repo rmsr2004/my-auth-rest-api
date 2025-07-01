@@ -1,4 +1,4 @@
-package com.myauth.api.dto.secret;
+package com.myauth.api.dtos.secret;
 
 import jakarta.validation.constraints.NotBlank;
 

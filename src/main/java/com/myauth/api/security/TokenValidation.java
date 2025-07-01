@@ -1,3 +1,5 @@
 package com.myauth.api.security;
 
-public record TokenValidation(boolean isValid, String message) {}
+import io.jsonwebtoken.Claims;
+
+public record TokenValidation(boolean isValid, String message, Claims claims) {}

@@ -1,4 +1,4 @@
-package com.myauth.api.models;
+package com.myauth.api.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

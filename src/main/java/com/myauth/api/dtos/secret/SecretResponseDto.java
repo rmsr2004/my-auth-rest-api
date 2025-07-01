@@ -1,3 +1,3 @@
-package com.myauth.api.dto.secret;
+package com.myauth.api.dtos.secret;
 
 public record SecretResponseDto(Long id, String message) {}

@@ -1,10 +1,10 @@
-package com.myauth.api.controller;
+package com.myauth.api.controllers;
 
-import com.myauth.api.dto.secret.SecretListDto;
-import com.myauth.api.dto.token.TokenListDto;
-import com.myauth.api.model.User;
-import com.myauth.api.repository.SecretRepository;
-import com.myauth.api.service.TotpService;
+import com.myauth.api.dtos.secret.SecretListDto;
+import com.myauth.api.dtos.token.TokenListDto;
+import com.myauth.api.entities.User;
+import com.myauth.api.repositories.SecretRepository;
+import com.myauth.api.services.TotpService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

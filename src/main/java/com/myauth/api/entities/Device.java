@@ -1,4 +1,4 @@
-package com.myauth.api.models;
+package com.myauth.api.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,4 +20,9 @@ public class Device {
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }

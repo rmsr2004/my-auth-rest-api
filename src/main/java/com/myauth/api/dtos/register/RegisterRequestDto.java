@@ -1,4 +1,4 @@
-package com.myauth.api.dto.register;
+package com.myauth.api.dtos.register;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -1,6 +1,6 @@
-package com.myauth.api.dto.token;
+package com.myauth.api.dtos.token;
 
-import com.myauth.api.dto.secret.SecretListDto;
+import com.myauth.api.dtos.secret.SecretListDto;
 
 import java.util.List;
 
