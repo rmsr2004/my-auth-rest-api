@@ -1,4 +1,4 @@
-package com.myauth.api.model;
+package com.myauth.api.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String deviceId;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
