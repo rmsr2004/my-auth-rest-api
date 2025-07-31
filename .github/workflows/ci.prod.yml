@@ -1,0 +1,41 @@
+name: Continuous Integration (prod)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prod-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+
+      - name: Unit & Integration Tests
+        run: mvn clean verify
+
+      - name: Build Final
+        run: mvn clean package -DskipTests
+
+      - name: Check docker-compose up
+        run: docker compose -f docker-compose.yml up -d --build
+
+      - name: ⏳ Wait for containers
+        run: sleep 10
+
+      - name: Check if container is running
+        run: docker ps
+
+      - name: Cleanup containers
+        run: docker compose -f docker-compose.yml down
