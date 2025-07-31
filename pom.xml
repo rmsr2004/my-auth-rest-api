@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.myauth</groupId>
-	<artifactId>api</artifactId>
+	<artifactId>Api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api</name>
+	<name>Api</name>
 	<description>REST API for MyAuth application</description>
 	<url/>
 	<licenses>
@@ -97,6 +97,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<mainClass>com.myauth.MyAuthApiApplication</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
