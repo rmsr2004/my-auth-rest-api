@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Registration Unit Tests")
-class UserRegistrationTest {
+class UserRegistrationTests {
     @Mock
     private IUserRepository userRepository;
 
