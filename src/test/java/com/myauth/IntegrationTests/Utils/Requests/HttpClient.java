@@ -1,21 +1,30 @@
 package com.myauth.IntegrationTests.Utils.Requests;
 
-import com.google.gson.Gson;
-import org.springframework.stereotype.Service;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.springframework.stereotype.Service;
+
+import com.google.gson.Gson;
 
 @Service
 public class HttpClient {
     private static String serverAddress;
     private static final Gson gson = new Gson();
 
-    public static <TRequest, TResponse> HttpResponse<TResponse>  post(String endpoint, TRequest request, Class<TResponse> responseType) {
+    public static <TRequest, TResponse> HttpResponse<TResponse> post(String endpoint, TRequest request, Class<TResponse> responseType) {
         return doRequest("POST", endpoint, request, responseType);
+    }
+
+    public static <TRequest, TResponse> HttpResponse<TResponse> put(String endpoint, TRequest request, Class<TResponse> responseType) {
+        return doRequest("PUT", endpoint, request, responseType);
     }
 
     private static <TRequest, TResponse> HttpResponse<TResponse> doRequest(String method, String endpoint, TRequest request, Class<TResponse> responseType) {

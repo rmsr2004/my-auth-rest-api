@@ -1,8 +1,18 @@
 package com.myauth.DomainTests;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.myauth.Api.Services.AuthService;
 import com.myauth.Domain.Entities.User;
@@ -11,16 +21,6 @@ import com.myauth.Domain.Shared.Result;
 import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
 import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.Infrastructure.Repositories.Mappers.UserMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Registration Unit Tests")
@@ -40,7 +40,7 @@ class UserRegistrationTests {
     @BeforeEach
     public void setup() {
         userMapper = new UserMapper(passwordEncoder);
-        authService = new AuthService(userRepository, userMapper);
+        authService = new AuthService(userRepository, null, userMapper, null);
     }
 
     @Test
@@ -48,7 +48,7 @@ class UserRegistrationTests {
     public void UserRegistration_ShouldReturnUserDetails_WhenRequestIsValid() {
         // Arrange
         User user = new User("username", "password");
-        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword");
+        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword", null);
 
         when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword");
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
@@ -70,7 +70,7 @@ class UserRegistrationTests {
     public void UserRegistration_ShouldReturnFailure_WhenUserAlreadyExists() {
         // Arrange
         User user = new User("username", "password");
-        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword");
+        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword", null);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(savedEntity));
 

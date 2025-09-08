@@ -1,28 +1,27 @@
 package com.myauth.IntegrationTests.Features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+
 import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
 import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
 import com.myauth.Domain.Shared.ErrorDto;
 import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
-import org.junit.jupiter.api.*;
-import org.springframework.http.HttpStatus;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("User Registration Integration Tests")
 class UserRegistrationTests extends PostgreSQLTestContainer {
-    @BeforeAll
-    static void setupHttpAddress() {
-        HttpClient.setServerAddress("http://localhost:8080/api/auth");
-    }
+    @LocalServerPort
+    private int port;
 
-    @Test
-    @DisplayName("Test to check if container was created and is running")
-    void connectionEstablished() {
-        assertThat(postgres.isCreated()).isTrue();
-        assertThat(postgres.isRunning()).isTrue();
+    @BeforeEach
+    void setup() {
+        HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
     }
 
     @Test

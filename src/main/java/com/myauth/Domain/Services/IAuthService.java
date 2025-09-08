@@ -5,5 +5,5 @@ import com.myauth.Domain.Shared.Result;
 
 public interface IAuthService {
     Result<User> register(User user);
-    Result<User> login(User user);
+    Result<String> login(User user);
 }
