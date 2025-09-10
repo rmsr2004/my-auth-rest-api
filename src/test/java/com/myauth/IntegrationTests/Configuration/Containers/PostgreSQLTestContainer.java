@@ -3,7 +3,6 @@ package com.myauth.IntegrationTests.Configuration.Containers;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,28 +10,23 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.DEFINED_PORT)
+import com.myauth.IntegrationTests.Configuration.TestContainerConfig;
+
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Testcontainers
 public abstract class PostgreSQLTestContainer {
-
-    @Container
-    protected static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
-
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
+        PostgreSQLContainer<?> postgres = TestContainerConfig.getPostgreSQLContainer();
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
-    }
-
-    @BeforeAll
-    static void beforeAll() {
-        postgres.start();
     }
 
     @AfterEach
