@@ -11,6 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -20,16 +22,36 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '21'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Verify Docker
+        run: |
+          docker --version
+          docker info
 
       - name: Build
         run: mvn clean package -DskipTests
 
       - name: Unit & Integration Tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true
+          TESTCONTAINERS_CHECKS_DISABLE: true
+          DOCKER_HOST: unix:///var/run/docker.sock
+          TESTCONTAINERS_PULL_TIMEOUT: 600
+          TESTCONTAINERS_LOG_LEVEL: DEBUG
 
   docker-test:
     runs-on: ubuntu-latest
     needs: test
+    timeout-minutes: 10
+    
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -39,6 +61,13 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '21'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
 
       - name: Build without tests
         run: mvn clean package -DskipTests
@@ -52,9 +81,24 @@ jobs:
       - name: Check if container is running
         run: docker ps
 
-      - name: Health check (opcional)
+      - name: Health check
         run: |
-          curl -f http://localhost:8080/actuator/health || exit 1
+          # Retry logic para o health check
+          for i in {1..10}; do
+            if curl -f http://localhost:8080/actuator/health; then
+              echo "Health check passed!"
+              break
+            else
+              echo "Health check failed, attempt $i/10"
+              sleep 10
+            fi
+            if [ $i -eq 10 ]; then
+              echo "Health check failed after 10 attempts"
+              docker logs $(docker ps -q)  # Log dos containers para debug
+              exit 1
+            fi
+          done
 
       - name: Cleanup containers
-        run: docker compose -f docker-compose.yml down
+        if: always()
+        run: docker compose -f docker-compose.yml down --volumes --remove-orphans

@@ -3,12 +3,14 @@ package com.myauth.IntegrationTests.Configuration.Containers;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -21,12 +23,21 @@ public abstract class PostgreSQLTestContainer {
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
+    static PostgreSQLContainer<?> postgres = TestContainerConfig.getPostgreSQLContainer();
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        PostgreSQLContainer<?> postgres = TestContainerConfig.getPostgreSQLContainer();
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @BeforeAll
+    static void setup() {
+        System.out.println("=== TESTCONTAINERS DEBUG INFO ===");
+        System.out.println("Docker available: " + DockerClientFactory.instance().isDockerAvailable());
+        System.out.println("Container JDBC URL: " + postgres.getJdbcUrl());
+        System.out.println("Container running: " + postgres.isRunning());
     }
 
     @AfterEach
