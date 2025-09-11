@@ -13,8 +13,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 public abstract class PostgreSQLTestContainer {
     @Autowired
     protected JdbcTemplate jdbcTemplate;

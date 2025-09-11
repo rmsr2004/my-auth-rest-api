@@ -5,9 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.myauth.Api.Features.UserLogin.LoginRequestDto;
 import com.myauth.Api.Features.UserLogin.LoginResponseDto;
@@ -17,6 +19,8 @@ import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContai
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 @DisplayName("User Login Integration Tests")
 class UserLoginTests extends PostgreSQLTestContainer {
     @Autowired

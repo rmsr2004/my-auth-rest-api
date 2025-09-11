@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
 import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
@@ -14,6 +16,8 @@ import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContai
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 @DisplayName("User Registration Integration Tests")
 class UserRegistrationTests extends PostgreSQLTestContainer {
     @LocalServerPort
