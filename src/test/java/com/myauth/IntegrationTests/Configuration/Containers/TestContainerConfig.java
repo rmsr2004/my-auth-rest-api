@@ -1,4 +1,4 @@
-package com.myauth.IntegrationTests.Configuration;
+package com.myauth.IntegrationTests.Configuration.Containers;
 
 import java.time.Duration;
 import java.util.Map;
