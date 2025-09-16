@@ -44,8 +44,6 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: true
           TESTCONTAINERS_CHECKS_DISABLE: true
           DOCKER_HOST: unix:///var/run/docker.sock
-          TESTCONTAINERS_PULL_TIMEOUT: 600
-          TESTCONTAINERS_LOG_LEVEL: DEBUG
 
   docker-test:
     runs-on: ubuntu-latest
