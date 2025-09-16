@@ -1,4 +1,4 @@
-name: Continuos Integration(dev)
+name: Continuous Integration (dev)
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           docker --version
           docker info
 
-      - name: Build
+      - name: Build (skip tests)
         run: mvn clean package -DskipTests
 
       - name: Unit & Integration Tests
