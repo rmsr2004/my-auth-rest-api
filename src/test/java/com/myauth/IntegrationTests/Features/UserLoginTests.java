@@ -1,6 +1,10 @@
 package com.myauth.IntegrationTests.Features;
 
+import static com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer.postgres;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +14,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.myauth.Api.Features.UserLogin.LoginRequestDto;
 import com.myauth.Api.Features.UserLogin.LoginResponseDto;
@@ -19,10 +27,11 @@ import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContai
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Testcontainers
 @DisplayName("User Login Integration Tests")
-class UserLoginTests extends PostgreSQLTestContainer {
+class UserLoginTests {
     @Autowired
     private IUserRepository userRepository;
 
@@ -32,8 +41,28 @@ class UserLoginTests extends PostgreSQLTestContainer {
     @LocalServerPort
     private int port;
 
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
+
     @BeforeEach
     void setup() {
+        userRepository.deleteAll();
         HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
     }
 

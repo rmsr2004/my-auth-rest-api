@@ -1,30 +1,73 @@
 package com.myauth.IntegrationTests.Features;
 
+import static com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer.postgres;
+
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 
 import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
 import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
 import com.myauth.Domain.Shared.ErrorDto;
+import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
+import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Testcontainers
 @DisplayName("User Registration Integration Tests")
-class UserRegistrationTests extends PostgreSQLTestContainer {
+class UserRegistrationTests  {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private IUserRepository userRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
+
     @BeforeEach
     void setup() {
+        jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+
         HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
     }
 
@@ -52,14 +95,12 @@ class UserRegistrationTests extends PostgreSQLTestContainer {
     @DisplayName("Should return error message when user already exists")
     void UserRegistration_ShouldReturn409_WhenRequestIsInvalid() {
         // Arrange
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUsername("username");
+        existingUser.setPassword("password");
+        userRepository.save(existingUser);
+
         RegisterRequestDto request = new RegisterRequestDto("username", "password");
-
-        // Act (1st post)
-        HttpResponse<RegisterResponseDto> firstResponse = HttpClient.post("/register", request, RegisterResponseDto.class);
-
-        // Assert (1st post)
-        assertThat(firstResponse).isNotNull();
-        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         // Act (2nd post)
         HttpResponse<ErrorDto> secondResponse = HttpClient.post("/register", request, ErrorDto.class);
