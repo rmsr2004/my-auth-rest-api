@@ -1,8 +1,6 @@
 package com.myauth.IntegrationTests.Features;
 
-import static com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer.postgres;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +21,6 @@ import com.myauth.Api.Features.UserLogin.LoginRequestDto;
 import com.myauth.Api.Features.UserLogin.LoginResponseDto;
 import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
 import com.myauth.Infrastructure.Repositories.IUserRepository;
-import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 

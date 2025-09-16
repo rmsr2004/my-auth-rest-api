@@ -1,33 +1,28 @@
 package com.myauth.IntegrationTests.Features;
 
-import static com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer.postgres;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 
 import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
 import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
 import com.myauth.Domain.Shared.ErrorDto;
 import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
 import com.myauth.Infrastructure.Repositories.IUserRepository;
-import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
