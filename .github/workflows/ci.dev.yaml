@@ -45,20 +45,15 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Verify Docker
-        run: |
-          docker --version
-          docker info
-
       - name: Build (skip tests)
         run: mvn clean package -DskipTests
 
       - name: Unit & Integration Tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
         env:
-          TESTCONTAINERS_RYUK_DISABLED: true
-          TESTCONTAINERS_CHECKS_DISABLE: true
-          DOCKER_HOST: unix:///var/run/docker.sock
+          DB_URL: jdbc:postgresql://localhost:5432/testdb
+          DB_USERNAME: test
+          DB_PASSWORD: test
 
   docker-test:
     runs-on: ubuntu-latest
@@ -96,7 +91,6 @@ jobs:
 
       - name: Health check
         run: |
-          # Retry logic para o health check
           for i in {1..10}; do
             if curl -f http://localhost:8080/actuator/health; then
               echo "Health check passed!"
@@ -107,7 +101,7 @@ jobs:
             fi
             if [ $i -eq 10 ]; then
               echo "Health check failed after 10 attempts"
-              docker logs $(docker ps -q)  # Log dos containers para debug
+              docker logs $(docker ps -q)
               exit 1
             fi
           done
