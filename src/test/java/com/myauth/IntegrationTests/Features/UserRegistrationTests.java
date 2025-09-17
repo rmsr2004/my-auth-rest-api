@@ -1,28 +1,62 @@
 package com.myauth.IntegrationTests.Features;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
 import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
 import com.myauth.Domain.Shared.ErrorDto;
-import com.myauth.IntegrationTests.Configuration.Containers.PostgreSQLTestContainer;
+import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
+import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
-import org.junit.jupiter.api.*;
-import org.springframework.http.HttpStatus;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@Testcontainers
 @DisplayName("User Registration Integration Tests")
-class UserRegistrationTests extends PostgreSQLTestContainer {
-    @BeforeAll
-    static void setupHttpAddress() {
-        HttpClient.setServerAddress("http://localhost:8080/api/auth");
+class UserRegistrationTests  {
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private IUserRepository userRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
+        .withDatabaseName("testdb")
+        .withUsername("test")
+        .withPassword("test");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    @Test
-    @DisplayName("Test to check if container was created and is running")
-    void connectionEstablished() {
-        assertThat(postgres.isCreated()).isTrue();
-        assertThat(postgres.isRunning()).isTrue();
+    @BeforeEach
+    void setup() {
+        jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
+
+        HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
     }
 
     @Test
@@ -49,19 +83,17 @@ class UserRegistrationTests extends PostgreSQLTestContainer {
     @DisplayName("Should return error message when user already exists")
     void UserRegistration_ShouldReturn409_WhenRequestIsInvalid() {
         // Arrange
+        UserEntity existingUser = new UserEntity();
+        existingUser.setUsername("username");
+        existingUser.setPassword("password");
+        userRepository.save(existingUser);
+
         RegisterRequestDto request = new RegisterRequestDto("username", "password");
 
-        // Act (1st post)
-        HttpResponse<RegisterResponseDto> firstResponse = HttpClient.post("/register", request, RegisterResponseDto.class);
-
-        // Assert (1st post)
-        assertThat(firstResponse).isNotNull();
-        assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-        // Act (2nd post)
+        // Act
         HttpResponse<ErrorDto> secondResponse = HttpClient.post("/register", request, ErrorDto.class);
 
-        // Assert (2nd post)
+        // Assert
         assertThat(secondResponse).isNotNull();
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
 
