@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -23,13 +23,13 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U test"
-          --health-interval=10s
+          --health-cmd="pg_isready -U test -d testdb"
+          --health-interval=5s
           --health-timeout=5s
-          --health-retries=5
-    
+          --health-retries=10
+
     steps:
-      - name: Code Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Java 21
@@ -48,16 +48,25 @@ jobs:
       - name: Build (skip tests)
         run: mvn clean package -DskipTests
 
-      - name: Create test database
+      - name: Wait for Postgres
         run: |
-          PGPASSWORD=test psql -h localhost -U postgres -c "CREATE DATABASE test;"
+          for i in {1..20}; do
+            pg_isready -h localhost -U test -d testdb
+            if [ $? -eq 0 ]; then
+              echo "Postgres is ready!"
+              break
+            fi
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
 
-      - name: Unit & Integration Tests
+      - name: Run unit & integration tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
         env:
-          DB_URL: jdbc:postgresql://localhost:5432/testdb
-          DB_USERNAME: test
-          DB_PASSWORD: test
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: test
+          SPRING_DATASOURCE_PASSWORD: test
+          JWT_SECRET: mysecretkey
 
   docker-test:
     runs-on: ubuntu-latest
