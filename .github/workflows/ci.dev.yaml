@@ -100,7 +100,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Check docker-compose up
-        run: docker compose -f docker-compose.yml up -d --buil
+        run: docker compose -f docker-compose.yml up -d --build
 
       - name: Waiting for containers
         run: sleep 30
