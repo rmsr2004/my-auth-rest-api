@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  Unit & Integration Tests:
+  Unit and Integration Tests:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
