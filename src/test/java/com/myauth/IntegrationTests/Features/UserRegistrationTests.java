@@ -25,7 +25,7 @@ import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Testcontainers
 @DisplayName("User Registration Integration Tests")
@@ -90,10 +90,10 @@ class UserRegistrationTests  {
 
         RegisterRequestDto request = new RegisterRequestDto("username", "password");
 
-        // Act (2nd post)
+        // Act
         HttpResponse<ErrorDto> secondResponse = HttpClient.post("/register", request, ErrorDto.class);
 
-        // Assert (2nd post)
+        // Assert
         assertThat(secondResponse).isNotNull();
         assertThat(secondResponse.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
 

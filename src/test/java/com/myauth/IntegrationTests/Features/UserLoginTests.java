@@ -59,13 +59,12 @@ class UserLoginTests {
     @Test
     @DisplayName("Should return jwt token when user is valid")
     void UserLogin_ShouldReturn200_WhenRequestIsValid() {
-        // Pre-Arrange - Create user in database
+        // Arrange
         UserEntity user = new UserEntity();
         user.setUsername("username");
         user.setPassword(passwordEncoder.encode("password"));
         userRepository.save(user);
         
-        // Arrange
         LoginRequestDto request = new LoginRequestDto("username", "password");
 
         // Act
@@ -104,13 +103,12 @@ class UserLoginTests {
     @Test
     @DisplayName("Should return 401 when password is incorrect")
     void UserLogin_ShouldReturn401_WhenPasswordIsIncorrect() {
-        // Pre-Arrange - Create user in database
+        // Arrange
         UserEntity user = new UserEntity();
         user.setUsername("username");
         user.setPassword(passwordEncoder.encode("correctpassword"));
         userRepository.save(user);
 
-        // Arrange
         LoginRequestDto request = new LoginRequestDto("username", "wrongpassword");
 
         // Act

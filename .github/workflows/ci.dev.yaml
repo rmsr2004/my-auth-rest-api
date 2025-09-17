@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  Unit & Integration Tests:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -64,6 +64,6 @@ jobs:
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
-          SPRING_DATASOURCE_USERNAME: test
-          SPRING_DATASOURCE_PASSWORD: test
-          JWT_SECRET: mysecretkey
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          JWT_SECRET: testkey
