@@ -72,6 +72,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     timeout-minutes: 10
+    env:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/testdb
+      JWT_SECRET: testkey
     
     steps:
       - name: Code Checkout
@@ -94,13 +100,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Check docker-compose up
-        run: docker compose -f docker-compose.yml up -d --build
-        env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/testdb
-          JWT_SECRET: testkey
+        run: docker compose -f docker-compose.yml up -d --buil
 
       - name: Waiting for containers
         run: sleep 30
