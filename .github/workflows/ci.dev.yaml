@@ -95,6 +95,12 @@ jobs:
 
       - name: Check docker-compose up
         run: docker compose -f docker-compose.yml up -d --build
+        env:
+          POSTGRES_DB=testdb
+          POSTGRES_USER=test
+          POSTGRES_PASSWORD=test
+          SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/testdb
+          JWT_SECRET=testkey
 
       - name: Waiting for containers
         run: sleep 30
