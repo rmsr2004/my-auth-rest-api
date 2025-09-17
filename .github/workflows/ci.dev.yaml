@@ -50,7 +50,7 @@ jobs:
 
       - name: Create test database
         run: |
-          psql -h localhost -U postgres -c "CREATE DATABASE test;"
+          PGPASSWORD=test psql -h localhost -U postgres -c "CREATE DATABASE test;"
 
       - name: Unit & Integration Tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
