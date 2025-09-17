@@ -12,6 +12,13 @@ jobs:
   prod-pipeline:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+        POSTGRES_DB: testdb
+        POSTGRES_USER: test
+        POSTGRES_PASSWORD: test
+        JWT_SECRET: testkey
+
 
     services:
       postgres:
