@@ -17,13 +17,13 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.myauth.Api.Features.UserRegistration.RegisterRequestDto;
-import com.myauth.Api.Features.UserRegistration.RegisterResponseDto;
-import com.myauth.Domain.Shared.ErrorDto;
-import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
-import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
+import com.myauth.features.userregistration.RegisterRequestDto;
+import com.myauth.features.userregistration.RegisterResponseDto;
+import com.myauth.common.utils.ErrorDto;
+import com.myauth.infrastructure.db.entities.User;
+import com.myauth.infrastructure.db.repositories.IUserRepository;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -83,7 +83,7 @@ class UserRegistrationTests  {
     @DisplayName("Should return error message when user already exists")
     void UserRegistration_ShouldReturn409_WhenRequestIsInvalid() {
         // Arrange
-        UserEntity existingUser = new UserEntity();
+        User existingUser = new User();
         existingUser.setUsername("username");
         existingUser.setPassword("password");
         userRepository.save(existingUser);

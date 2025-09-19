@@ -14,13 +14,11 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.myauth.Api.Services.AuthService;
-import com.myauth.Domain.Entities.User;
-import com.myauth.Domain.Shared.Errors;
-import com.myauth.Domain.Shared.Result;
-import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
-import com.myauth.Infrastructure.Repositories.IUserRepository;
-import com.myauth.Infrastructure.Repositories.Mappers.UserMapper;
+import com.myauth.common.utils.Errors;
+import com.myauth.common.utils.Result;
+import com.myauth.features.userregistration.UserRegistrationHandler;
+import com.myauth.infrastructure.db.entities.User;
+import com.myauth.infrastructure.db.repositories.IUserRepository;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Registration Unit Tests")
@@ -29,33 +27,29 @@ class UserRegistrationTests {
     private IUserRepository userRepository;
 
     @Mock
-    private UserMapper userMapper;
-
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private AuthService authService;
+    private UserRegistrationHandler handler;
 
     @BeforeEach
     public void setup() {
-        userMapper = new UserMapper(passwordEncoder);
-        authService = new AuthService(userRepository, null, userMapper, null);
+        handler = new UserRegistrationHandler(userRepository, passwordEncoder);
     }
 
     @Test
     @DisplayName("Should return Success when user is valid")
     public void UserRegistration_ShouldReturnUserDetails_WhenRequestIsValid() {
         // Arrange
-        User user = new User("username", "password");
-        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null);
 
         when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword");
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
-        when(userRepository.save(any(UserEntity.class))).thenReturn(savedEntity);
+        when(userRepository.save(any(User.class))).thenReturn(savedEntity);
 
         // Act
-        Result<User> result = authService.register(user);
+        Result<User> result = handler.register(user);
 
         // Assert
         assertThat(result).isNotNull();
@@ -69,13 +63,13 @@ class UserRegistrationTests {
     @DisplayName("Should return failure when user already exists")
     public void UserRegistration_ShouldReturnFailure_WhenUserAlreadyExists() {
         // Arrange
-        User user = new User("username", "password");
-        UserEntity savedEntity = new UserEntity(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(savedEntity));
 
         // Act
-        Result<User> result = authService.register(user);
+        Result<User> result = handler.register(user);
 
         // Assert
         assertThat(result).isNotNull();
