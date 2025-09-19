@@ -16,12 +16,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.myauth.Api.Features.UserLogin.LoginRequestDto;
-import com.myauth.Api.Features.UserLogin.LoginResponseDto;
-import com.myauth.Infrastructure.Repositories.Entities.UserEntity;
-import com.myauth.Infrastructure.Repositories.IUserRepository;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
+import com.myauth.features.userlogin.LoginRequestDto;
+import com.myauth.features.userlogin.LoginResponseDto;
+import com.myauth.infrastructure.db.entities.User;
+import com.myauth.infrastructure.db.repositories.IUserRepository;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -60,7 +60,7 @@ class UserLoginTests {
     @DisplayName("Should return jwt token when user is valid")
     void UserLogin_ShouldReturn200_WhenRequestIsValid() {
         // Arrange
-        UserEntity user = new UserEntity();
+        User user = new User();
         user.setUsername("username");
         user.setPassword(passwordEncoder.encode("password"));
         userRepository.save(user);
@@ -104,7 +104,7 @@ class UserLoginTests {
     @DisplayName("Should return 401 when password is incorrect")
     void UserLogin_ShouldReturn401_WhenPasswordIsIncorrect() {
         // Arrange
-        UserEntity user = new UserEntity();
+        User user = new User();
         user.setUsername("username");
         user.setPassword(passwordEncoder.encode("correctpassword"));
         userRepository.save(user);
