@@ -45,8 +45,8 @@ class UserLoginTests {
     @DisplayName("Should return success when user is valid")
     public void UserLogin_ShouldReturnJWTtoken_WhenRequestIsValid() {
         // Arrange
-        User user = new User(1L, "username", "password", null);
-        User savedEntity = new User(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null, null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null, null);
 
         when(passwordEncoder.matches(user.getPassword(), savedEntity.getPassword())).thenReturn(true);
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(savedEntity));
@@ -65,7 +65,7 @@ class UserLoginTests {
     @DisplayName("Should return failure when user not found")
     public void UserLogin_ShouldReturnFailure_WhenUserNotFound() {
         // Arrange
-        User user = new User(1L, "username", "password", null);
+        User user = new User(1L, "username", "password", null, null);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
@@ -83,8 +83,8 @@ class UserLoginTests {
     @DisplayName("Should return failure when password is invalid")
     public void UserLogin_ShouldReturnFailure_WhenPasswordIsInvalid() {
         // Arrange
-        User user = new User(1L, "username", "password", null);
-        User savedEntity = new User(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null, null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null, null);
         
         when(passwordEncoder.matches(user.getPassword(), savedEntity.getPassword())).thenReturn(false);
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(savedEntity));

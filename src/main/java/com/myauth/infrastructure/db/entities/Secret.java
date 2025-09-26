@@ -1,14 +1,12 @@
 package com.myauth.infrastructure.db.entities;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,25 +14,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="users")
+@Table(name="secrets")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Secret {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable=false, unique=true)
-    private String username;
+    private String secret;
 
     @Column(nullable=false)
-    private String password;
-
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-    private List<Secret> secrets;
-
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-    private List<Device> devices;
+    private String issuer;
+    
+    @ManyToOne
+    @JoinColumn(name="users_id", nullable=false)
+    private User user;
 }

@@ -41,8 +41,8 @@ class UserRegistrationTests {
     @DisplayName("Should return Success when user is valid")
     public void UserRegistration_ShouldReturnUserDetails_WhenRequestIsValid() {
         // Arrange
-        User user = new User(1L, "username", "password", null);
-        User savedEntity = new User(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null, null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null, null);
 
         when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword");
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
@@ -63,8 +63,8 @@ class UserRegistrationTests {
     @DisplayName("Should return failure when user already exists")
     public void UserRegistration_ShouldReturnFailure_WhenUserAlreadyExists() {
         // Arrange
-        User user = new User(1L, "username", "password", null);
-        User savedEntity = new User(1L, "username", "encodedPassword", null);
+        User user = new User(1L, "username", "password", null, null);
+        User savedEntity = new User(1L, "username", "encodedPassword", null, null);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(savedEntity));
 
