@@ -36,6 +36,10 @@ public class AddSecretController {
             mediaType="application/json",
             schema=@Schema(implementation=AddSecretResponseDto.class)
         )),
+        @ApiResponse(responseCode="409", description="Conflict", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation=ErrorDto.class)
+        )),
         @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
@@ -52,21 +56,20 @@ public class AddSecretController {
             return ResponseEntity.status(HttpStatus.CREATED).body(
                 new AddSecretResponseDto(
                     result.getValue().getId(),
+                    result.getValue().getIssuer(),
                     "Secret successfully created"
                 )
             );
-        } else {
-            return ResponseEntity.status(result.getError().code()).body(
-                new ErrorDto(
-                    OffsetDateTime.now().toString(),
-                    HttpStatus.FORBIDDEN.value(),
-                    "Forbidden",
-                    result.getError().message(),
-                    request.getRequestURI()
-                )
-            );
         }
-
         
+        return ResponseEntity.status(result.getError().code()).body(
+            new ErrorDto(
+                OffsetDateTime.now().toString(),
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                result.getError().message(),
+                request.getRequestURI()
+            )
+        );
     }
 }
