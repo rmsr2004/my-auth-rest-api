@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import com.myauth.common.utils.ErrorDto;
 import com.myauth.common.utils.Result;
@@ -41,6 +42,10 @@ public class AddSecretController {
             schema=@Schema(implementation=ErrorDto.class)
         )),
         @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
+        )),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         ))
