@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 public class SecurityConfig {
     private final SecurityFilter securityFilter;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -27,10 +29,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.PUT, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/swagger-ui").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll() // Adicione '/**'
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll() // Para o Swagger funcionar
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                
         return http.build();
     }
 

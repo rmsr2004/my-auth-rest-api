@@ -1,6 +1,5 @@
 package com.myauth.IntegrationTests.Features;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +18,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
+import com.myauth.common.utils.ErrorDto;
 import com.myauth.features.userregistration.RegisterRequestDto;
 import com.myauth.features.userregistration.RegisterResponseDto;
-import com.myauth.common.utils.ErrorDto;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
 

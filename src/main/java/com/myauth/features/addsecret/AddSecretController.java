@@ -65,8 +65,8 @@ public class AddSecretController {
         return ResponseEntity.status(result.getError().code()).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),
-                HttpStatus.FORBIDDEN.value(),
-                "Forbidden",
+                result.getError().code().value(),
+                "Conflict",
                 result.getError().message(),
                 request.getRequestURI()
             )

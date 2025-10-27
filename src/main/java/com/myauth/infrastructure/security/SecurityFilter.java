@@ -11,7 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
-import com.myauth.infrastructure.security.exceptions.UserNotFoundException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,37 +27,48 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        String method = request.getMethod();
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        // String path = request.getRequestURI();
+        // String method = request.getMethod();
 
-        if ("/api/auth/register".equals(path) && "POST".equalsIgnoreCase(method)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // if ("/api/auth/register".equals(path) && "POST".equalsIgnoreCase(method)) {
+        // filterChain.doFilter(request, response);
+        // return;
+        // }
 
-        if ("/swagger-ui".equals(path) && "GET".equalsIgnoreCase(method)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // if ("/swagger-ui".equals(path) && "GET".equalsIgnoreCase(method)) {
+        // filterChain.doFilter(request, response);
+        // return;
+        // }
 
-        String token = this.getToken(request);
-        Long userId = tokenService.validateToken(token);
+        try {
+            String token = this.getToken(request);
 
-        if (userId != null) {
-            User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+            if (token != null) {
+                Long userId = tokenService.validateToken(token);
 
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (userId != null) {
+                    User user = userRepository.findById(userId).orElse(null);
+
+                    if (user != null) {
+                        var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                        var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Authentication failed: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String getToken(HttpServletRequest request){
+    private String getToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
+        if (authHeader == null)
+            return null;
         return authHeader.replace("Bearer ", "");
     }
 }

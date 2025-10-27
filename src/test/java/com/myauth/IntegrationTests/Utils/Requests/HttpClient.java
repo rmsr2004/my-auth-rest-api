@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 public class HttpClient {
     private static String serverAddress;
     private static final Gson gson = new Gson();
+    private static String authToken;
 
     public static <TRequest, TResponse> HttpResponse<TResponse> post(String endpoint, TRequest request, Class<TResponse> responseType) {
         return doRequest("POST", endpoint, request, responseType);
@@ -35,6 +36,10 @@ public class HttpClient {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
+            
+            if (authToken != null && !authToken.isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + authToken);
+            }
 
             if (request != null) {
                 String jsonRequest = gson.toJson(request);
@@ -73,5 +78,9 @@ public class HttpClient {
 
     public static void setServerAddress(String serverAddress) {
         HttpClient.serverAddress = serverAddress;
+    }
+
+    public static void setAuthToken(String token) {
+        authToken = token;
     }
 }
