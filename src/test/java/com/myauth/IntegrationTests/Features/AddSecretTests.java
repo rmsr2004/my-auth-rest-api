@@ -86,7 +86,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -128,7 +128,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -150,7 +150,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();
