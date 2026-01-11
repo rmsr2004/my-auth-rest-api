@@ -49,6 +49,7 @@ class AddSecretTests {
             .withPassword("test");
     
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
@@ -56,6 +57,7 @@ class AddSecretTests {
     }
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setup() {
         secretRepository.deleteAll();
         userRepository.deleteAll();

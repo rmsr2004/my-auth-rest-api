@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import com.myauth.common.utils.ErrorDto;
 import com.myauth.common.utils.Result;
@@ -27,7 +26,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/secret")
+@RequestMapping("api/auth/secrets")
 public class AddSecretController {
     private final AddSecretHandler handler;
 
@@ -51,7 +50,7 @@ public class AddSecretController {
         ))
     })
     @PostMapping
-    public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequestDto body, @AuthenticationPrincipal User user , HttpServletRequest request) {
+    public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequestDto body, @AuthenticationPrincipal User user, HttpServletRequest request) {
         String secret = body.secret();
         String issuer = body.issuer();
 
