@@ -20,6 +20,10 @@ public class HttpClient {
     private static final Gson gson = new Gson();
     private static String authToken;
 
+    public static <TResponse> HttpResponse<TResponse> get(String endpoint, Class<TResponse> responseType) {
+        return doRequest("GET", endpoint, null, responseType);
+    } 
+
     public static <TRequest, TResponse> HttpResponse<TResponse> post(String endpoint, TRequest request, Class<TResponse> responseType) {
         return doRequest("POST", endpoint, request, responseType);
     }

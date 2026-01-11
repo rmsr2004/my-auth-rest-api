@@ -3,11 +3,13 @@ package com.myauth.infrastructure.security;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
@@ -16,14 +18,23 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
-@AllArgsConstructor
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final IUserRepository userRepository;
+    private final HandlerExceptionResolver resolver;
+
+    public SecurityFilter(
+            TokenService tokenService,
+            IUserRepository userRepository,
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
+    ) {
+        this.tokenService = tokenService;
+        this.userRepository = userRepository;
+        this.resolver = resolver;
+    }
 
     @SneakyThrows
     @Override
@@ -60,6 +71,10 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             logger.warn("Authentication failed: " + e.getMessage());
+            if (resolver.resolveException(request, response, null, e) == null) {
+                throw new ServletException(e);
+            }
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -67,8 +82,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private String getToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if (authHeader == null)
+        if (authHeader == null) {
             return null;
+        }
         return authHeader.replace("Bearer ", "");
     }
 }

@@ -49,6 +49,7 @@ class AddSecretTests {
             .withPassword("test");
     
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
@@ -56,6 +57,7 @@ class AddSecretTests {
     }
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setup() {
         secretRepository.deleteAll();
         userRepository.deleteAll();
@@ -84,7 +86,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -126,7 +128,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -148,7 +150,7 @@ class AddSecretTests {
         AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secret", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
 
         // Assert
         assertThat(response).isNotNull();

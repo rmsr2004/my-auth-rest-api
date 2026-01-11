@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/secret")
+@RequestMapping("api/auth/secrets")
 public class AddSecretController {
     private final AddSecretHandler handler;
 
@@ -43,10 +43,14 @@ public class AddSecretController {
         @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
+        )),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
         ))
     })
     @PostMapping
-    public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequestDto body, @AuthenticationPrincipal User user , HttpServletRequest request) {
+    public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequestDto body, @AuthenticationPrincipal User user, HttpServletRequest request) {
         String secret = body.secret();
         String issuer = body.issuer();
 
