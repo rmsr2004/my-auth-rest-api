@@ -34,11 +34,19 @@ public class UserLoginController {
             mediaType="application/json",
             schema=@Schema(implementation=LoginResponseDto.class)
         )),
+        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
+        )),
         @ApiResponse(responseCode="403", description="User credentials are invalid", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=ErrorDto.class)
         )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
+        @ApiResponse(responseCode="404", description="User not found", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation=ErrorDto.class)
+        )),
+        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         ))
@@ -49,22 +57,22 @@ public class UserLoginController {
         
         Result<String> result = handler.login(user);
 
-        if (result.isSuccess()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                new LoginResponseDto(
-                    result.getValue(),
-                    "User successfully logged in!"
+        if (result.isFailure()) {
+            return ResponseEntity.status(result.getError().code()).body(
+                new ErrorDto(
+                    OffsetDateTime.now().toString(),
+                    result.getError().code().value(),
+                    result.getError().code().getReasonPhrase(),
+                    result.getError().message(),
+                    request.getRequestURI()
                 )
             );
         }
-
-        return ResponseEntity.status(result.getError().code()).body(
-            new ErrorDto(
-                    OffsetDateTime.now().toString(),
-                    HttpStatus.FORBIDDEN.value(),
-                    "Forbidden",
-                    result.getError().message(),
-                    request.getRequestURI()
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new LoginResponseDto(
+                result.getValue(),
+                "User successfully logged in!"
             )
         );
     }
