@@ -51,6 +51,10 @@ public class AddSecretController {
         @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
+        )),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
         ))
     })
     @PostMapping

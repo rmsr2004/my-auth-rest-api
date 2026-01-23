@@ -1,3 +1,3 @@
 package com.myauth.features.getsecrets;
 
-public record SecretDto(String issuer, String value) {};
+public record SecretDto(Long id, String issuer, String value) {};
