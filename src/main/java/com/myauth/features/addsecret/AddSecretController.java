@@ -36,11 +36,19 @@ public class AddSecretController {
             mediaType="application/json",
             schema=@Schema(implementation=AddSecretResponseDto.class)
         )),
+        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
+        )),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
+        )),
         @ApiResponse(responseCode="409", description="Conflict", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=ErrorDto.class)
         )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
+        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         )),
@@ -56,23 +64,23 @@ public class AddSecretController {
 
         Result<Secret> result = handler.addSecret(user, secret, issuer);
 
-        if (result.isSuccess()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                new AddSecretResponseDto(
-                    result.getValue().getId(),
-                    result.getValue().getIssuer(),
-                    "Secret successfully created"
+        if (result.isFailure()) {
+            return ResponseEntity.status(result.getError().code()).body(
+                new ErrorDto(
+                    OffsetDateTime.now().toString(),
+                    result.getError().code().value(),
+                    result.getError().code().getReasonPhrase(),
+                    result.getError().message(),
+                    request.getRequestURI()
                 )
             );
         }
         
-        return ResponseEntity.status(result.getError().code()).body(
-            new ErrorDto(
-                OffsetDateTime.now().toString(),
-                result.getError().code().value(),
-                "Conflict",
-                result.getError().message(),
-                request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            new AddSecretResponseDto(
+                result.getValue().getId(),
+                result.getValue().getIssuer(),
+                "Secret successfully created"
             )
         );
     }

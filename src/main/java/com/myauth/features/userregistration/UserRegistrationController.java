@@ -1,10 +1,10 @@
-package com.myauth.features.userlogin;
+package com.myauth.features.userregistration;
 
 import java.time.OffsetDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,39 +24,35 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/login")
-public class UserLoginController {
-    public final UserLoginHandler handler;
+@RequestMapping("/api/auth/register")
+public class UserRegistrationController {
+    public final UserRegistrationHandler handler;
 
-    @Operation(summary="User login")
-    @ApiResponses(value={
-        @ApiResponse(responseCode="200", description="User successfully logged in", content=@Content(
+    @Operation(summary="Register a new user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode="201", description="User successfully registered", content=@Content(
             mediaType="application/json",
-            schema=@Schema(implementation=LoginResponseDto.class)
+            schema=@Schema(implementation = RegisterResponseDto.class)
         )),
         @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         )),
-        @ApiResponse(responseCode="403", description="User credentials are invalid", content=@Content(
+        @ApiResponse(responseCode="409", description="User are already registered", content=@Content(
             mediaType="application/json",
-            schema=@Schema(implementation=ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="404", description="User not found", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation=ErrorDto.class)
+            schema=@Schema(implementation = ErrorDto.class)
         )),
         @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         ))
     })
-    @PutMapping
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDto body, HttpServletRequest request) {
+    @PostMapping()
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto body, HttpServletRequest request) {
         User user = body.toUser();
         
-        Result<String> result = handler.login(user);
-
+        Result<User> result = handler.register(user);
+        
         if (result.isFailure()) {
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
@@ -69,10 +65,11 @@ public class UserLoginController {
             );
         }
         
-        return ResponseEntity.status(HttpStatus.OK).body(
-            new LoginResponseDto(
-                result.getValue(),
-                "User successfully logged in!"
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            new RegisterResponseDto(
+                result.getValue().getId().toString(),
+                result.getValue().getUsername(),
+                "User successfully registered!"
             )
         );
     }
