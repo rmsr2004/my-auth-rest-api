@@ -27,7 +27,7 @@ public class GetSecretsHandler {
         List<SecretDto> secretDtos = new ArrayList<>(secrets.size());
 
         for (Secret secret : secrets) {
-            secretDtos.add(new SecretDto(secret.getIssuer(), secret.getSecret()));
+            secretDtos.add(new SecretDto(secret.getId(), secret.getIssuer(), secret.getSecret()));
         }
          
         return Result.success(secretDtos);
