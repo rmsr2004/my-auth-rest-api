@@ -32,6 +32,10 @@ public class HttpClient {
         return doRequest("PUT", endpoint, request, responseType);
     }
 
+    public static <TResponse> HttpResponse<TResponse> delete(String endpoint, Class<TResponse> responseType) {
+        return doRequest("DELETE", endpoint, null, responseType);
+    }
+
     private static <TRequest, TResponse> HttpResponse<TResponse> doRequest(String method, String endpoint, TRequest request, Class<TResponse> responseType) {
         try {
             URL url = URI.create(serverAddress + endpoint).toURL();
