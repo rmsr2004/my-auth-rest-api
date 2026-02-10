@@ -43,7 +43,7 @@ public class AddDeviceTests {
         String deviceId = "unique-id-1";
         String name = "Pixel 8";
 
-        when(repository.existsByUserAndDeviceId(user, deviceId)).thenReturn(false);
+        when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
         when(repository.count()).thenReturn(0L);
 
         // Act
@@ -55,7 +55,7 @@ public class AddDeviceTests {
         assertThat(result.getValue()).isNotNull();
         assertThat(result.getValue().getId()).isEqualTo(deviceId);
         assertThat(result.getValue().getName()).isEqualTo(name);
-        assertThat(result.getValue().getAdmin()).isTrue();
+        assertThat(result.getValue().getIsAdmin()).isTrue();
     }
 
     @Test
@@ -66,7 +66,7 @@ public class AddDeviceTests {
         String deviceId = "unique-id-2";
         String name = "iPhone";
 
-        when(repository.existsByUserAndDeviceId(user, deviceId)).thenReturn(false);
+        when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
         when(repository.count()).thenReturn(5L);
 
         // Act
@@ -78,7 +78,7 @@ public class AddDeviceTests {
         assertThat(result.getValue()).isNotNull();
         assertThat(result.getValue().getId()).isEqualTo(deviceId);
         assertThat(result.getValue().getName()).isEqualTo(name);
-        assertThat(result.getValue().getAdmin()).isFalse();
+        assertThat(result.getValue().getIsAdmin()).isFalse();
     }
 
     @Test
@@ -89,7 +89,7 @@ public class AddDeviceTests {
         String deviceId = "existing-id";
         String name = "Name";
 
-        when(repository.existsByUserAndDeviceId(user, deviceId)).thenReturn(true);
+        when(repository.existsByUserAndId(user, deviceId)).thenReturn(true);
 
         // Act
         Result<Device> result = handler.addDevice(user, deviceId, name);

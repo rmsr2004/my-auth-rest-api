@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 
 
 @RestController
-@RequestMapping("/auth/devices")
+@RequestMapping("api/auth/devices")
 @AllArgsConstructor
 public class AddDeviceController {
     private final AddDeviceHandler handler;

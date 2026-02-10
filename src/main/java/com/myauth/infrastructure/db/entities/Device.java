@@ -25,8 +25,8 @@ public class Device {
     @Column(nullable=false)
     private String name;
 
-    @Column(nullable=false)
-    private Boolean admin;
+    @Column(nullable=false, name="admin")
+    private Boolean isAdmin;
 
     @ManyToOne
     @JoinColumn(name="users_id", nullable=false)

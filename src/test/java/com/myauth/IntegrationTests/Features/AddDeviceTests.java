@@ -1,7 +1,6 @@
 package com.myauth.IntegrationTests.Features;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 import com.myauth.common.utils.ErrorDto;
+import com.myauth.common.utils.Errors;
 import com.myauth.features.adddevice.AddDeviceRequest;
 import com.myauth.features.adddevice.AddDeviceResponse;
 import com.myauth.infrastructure.db.entities.Device;
@@ -92,6 +92,10 @@ class AddDeviceTests {
         assertThat(result.name()).isEqualTo("Admin Phone");
         assertThat(result.message()).isEqualTo("Device created successfully");
 
+        Device createdDevice = deviceRepository.findById("device-1").orElse(null);
+        assertThat(createdDevice).isNotNull();
+        assertThat(createdDevice.getUser().getUsername()).isEqualTo("user1");
+        assertThat(createdDevice.getIsAdmin()).isTrue();
     }
 
     @Test
@@ -100,10 +104,12 @@ class AddDeviceTests {
         // Arrange
         User existingUser = createUser("existing");
         Device existingDevice = new Device();
+        
         existingDevice.setId("existing-id");
         existingDevice.setName("Existing Admin");
         existingDevice.setUser(existingUser);
-        existingDevice.setAdmin(true);
+        existingDevice.setIsAdmin(true);
+        
         deviceRepository.save(existingDevice);
 
         User newUser = createUser("newUser");
@@ -117,13 +123,20 @@ class AddDeviceTests {
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        // Assert DB
-        // Como count() > 0, este dispositivo deve ser admin = false
-        Device savedDevice = deviceRepository.findById("device-2").orElseThrow();
-        assertThat(savedDevice.isAdmin()).isFalse();
+        AddDeviceResponse result = response.body();
+
+        assertThat(result).isNotNull();
+        assertThat(result.id()).isNotNull();
+        assertThat(result.id()).isEqualTo("device-2");
+        assertThat(result.name()).isEqualTo("Normal Phone");
+        assertThat(result.message()).isEqualTo("Device created successfully");
+
+        Device createdDevice = deviceRepository.findById("device-2").orElse(null);
+        assertThat(createdDevice).isNotNull();
+        assertThat(createdDevice.getUser().getUsername()).isEqualTo("newUser");
+        assertThat(createdDevice.getIsAdmin()).isFalse();
     }
 
-    // --- CENÁRIO 3: CONFLITO (409) ---
     @Test
     @DisplayName("Should return 409 Conflict when device ID already exists for user")
     void AddDevice_ShouldReturn409_WhenDeviceAlreadyExists() {
@@ -133,12 +146,11 @@ class AddDeviceTests {
 
         String deviceId = "duplicate-id";
 
-        // Pré-inserir o device na BD
         Device existing = new Device();
         existing.setId(deviceId);
         existing.setName("Original");
         existing.setUser(user);
-        existing.setAdmin(true);
+        existing.setIsAdmin(true);
         deviceRepository.save(existing);
 
         AddDeviceRequest request = new AddDeviceRequest(deviceId, "New Name");
@@ -148,22 +160,23 @@ class AddDeviceTests {
 
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
-        // Ajusta a mensagem ao que tens no Errors.DEVICE_ALREADY_EXISTS
-        if (response.body() != null) {
-            assertThat(response.body().message()).isNotBlank();
-        }
+
+        ErrorDto result = response.body();
+
+        assertThat(result).isNotNull();
+        assertThat(result.message()).isEqualTo(Errors.DEVICE_ALREADY_EXISTS.message());
     }
 
-    // --- CENÁRIO 4: NÃO AUTENTICADO (401) ---
     @Test
     @DisplayName("Should return 401 when user is not authenticated")
     void AddDevice_ShouldReturn401_WhenNoToken() {
         // Arrange
-        HttpClient.setAuthToken(""); // Garante que não há token
+        HttpClient.setAuthToken("");
+
         AddDeviceRequest request = new AddDeviceRequest("id", "name");
 
         // Act
-        HttpResponse<Void> response = HttpClient.post("/devices", request, Void.class);
+        HttpResponse<ErrorDto> response = HttpClient.post("/devices", request, ErrorDto.class);
 
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());

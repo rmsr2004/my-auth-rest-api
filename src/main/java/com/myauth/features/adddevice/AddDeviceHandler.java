@@ -16,7 +16,7 @@ public class AddDeviceHandler {
     private final IDeviceRepository repository;
 
     public Result<Device> addDevice(User user, String id, String name) {
-        if (repository.existsByUserAndDeviceId(user, id)) {
+        if (repository.existsByUserAndId(user, id)) {
             return Result.failure(Errors.DEVICE_ALREADY_EXISTS);
         }
 
@@ -24,10 +24,10 @@ public class AddDeviceHandler {
         device.setUser(user);
         device.setId(id);
         device.setName(name);
-        device.setAdmin(false);
+        device.setIsAdmin(false);
 
         if (repository.count() == 0) {
-            device.setAdmin(true);
+            device.setIsAdmin(true);
         }
 
         repository.save(device);
