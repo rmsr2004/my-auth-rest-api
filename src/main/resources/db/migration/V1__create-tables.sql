@@ -15,6 +15,8 @@ CREATE TABLE secrets (
 
 CREATE TABLE devices (
     id	 TEXT,
+    name TEXT NOT NULL,
+    admin BOOLEAN NOT NULL,
     users_id BIGINT NOT NULL,
     PRIMARY KEY(id)
 );

@@ -9,4 +9,5 @@ import com.myauth.infrastructure.db.entities.User;
 
 public interface IDeviceRepository extends JpaRepository<Device, String> {
     Optional<Device> findByUser(User user); 
+    Boolean existsByUserAndId(User user, String deviceId);
 }
