@@ -22,7 +22,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/secrets")
@@ -53,6 +55,7 @@ public class DeleteSecretController {
         Result<Void> result = handler.deleteSecretForUser(secretId, user.getId());
 
         if (result.isFailure()) {
+            log.warn("Failed to delete secret with ID: {} for user: {} | Reason: {}", secretId, user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -64,6 +67,7 @@ public class DeleteSecretController {
             );
         }
 
+        log.info("Secret with ID: {} successfully deleted for user: {}", secretId, user.getUsername());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

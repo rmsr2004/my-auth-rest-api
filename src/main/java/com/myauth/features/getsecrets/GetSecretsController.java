@@ -21,7 +21,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/secrets")
@@ -48,10 +50,11 @@ public class GetSecretsController {
         ))
     })
     @GetMapping
-    public ResponseEntity<?> getCodes(@AuthenticationPrincipal User user, HttpServletRequest request) {
+    public ResponseEntity<?> getSecrets(@AuthenticationPrincipal User user, HttpServletRequest request) {
         Result<List<SecretDto>> result = handler.getSecretsForUser(user);
 
         if (result.isFailure()) {
+            log.warn("Failed to retrieve secrets for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                         OffsetDateTime.now().toString(),
@@ -62,11 +65,11 @@ public class GetSecretsController {
                 )
             );
         }
-
+        log.info("Secrets successfully retrieved for user: {}", user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(
             new GetSecretsResponseDto(
                 result.getValue(),
-                "Codes successfully retrieved"
+                "Secrets successfully retrieved"
             )
         );
     }
