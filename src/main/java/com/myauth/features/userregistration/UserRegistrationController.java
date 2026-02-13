@@ -21,7 +21,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth/register")
@@ -47,13 +49,14 @@ public class UserRegistrationController {
             schema=@Schema(implementation = ErrorDto.class)
         ))
     })
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto body, HttpServletRequest request) {
         User user = body.toUser();
         
         Result<User> result = handler.register(user);
         
         if (result.isFailure()) {
+            log.warn("Failed to register user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -65,11 +68,12 @@ public class UserRegistrationController {
             );
         }
         
+        log.info("User successfully registered: {}", user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new RegisterResponseDto(
                 result.getValue().getId().toString(),
                 result.getValue().getUsername(),
-                "User successfully registered!"
+                "User { " + result.getValue().getUsername() + " } successfully registered!"
             )
         );
     }

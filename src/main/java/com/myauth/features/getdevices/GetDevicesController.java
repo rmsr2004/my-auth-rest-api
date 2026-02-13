@@ -22,7 +22,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/devices")
@@ -53,6 +55,7 @@ public class GetDevicesController {
         Result<List<DeviceDto>> result = handler.getDevicesForUser(user);
 
         if (result.isFailure()) {
+            log.warn("Failed to retrieve devices for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -64,6 +67,7 @@ public class GetDevicesController {
             );
         }
 
+        log.info("Devices successfully retrieved for user: {}", user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(
             new GetDevicesResponse(
                 result.getValue(),

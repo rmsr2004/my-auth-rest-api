@@ -23,8 +23,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @RestController
 @RequestMapping("api/auth/devices")
 @AllArgsConstructor
@@ -59,6 +60,7 @@ public class AddDeviceController {
         Result<Device> result = handler.addDevice(user, body.id(), body.name());
 
         if (result.isFailure()) {
+            log.warn("Failed to add device for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -70,6 +72,7 @@ public class AddDeviceController {
             );
         }
         
+        log.info("Device with ID: {} successfully added for user: {}", result.getValue().getId(), user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new AddDeviceResponse(
                 result.getValue().getId(), 
