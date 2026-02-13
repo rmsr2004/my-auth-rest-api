@@ -26,7 +26,7 @@ public class AddDeviceHandler {
         device.setName(name);
         device.setIsAdmin(false);
 
-        if (repository.count() == 0) {
+        if (repository.getDevicesByUser(user).isEmpty()) {
             device.setIsAdmin(true);
         }
 
