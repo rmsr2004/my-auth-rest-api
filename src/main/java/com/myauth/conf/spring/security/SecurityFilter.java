@@ -1,4 +1,4 @@
-package com.myauth.infrastructure.security;
+package com.myauth.conf.spring.security;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -27,9 +27,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver resolver;
 
     public SecurityFilter(
-            TokenService tokenService,
-            IUserRepository userRepository,
-            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
+        TokenService tokenService,
+        IUserRepository userRepository,
+        @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
     ) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
@@ -38,8 +38,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+        HttpServletRequest request, 
+        HttpServletResponse response, 
+        FilterChain filterChain
+    ) throws ServletException, IOException {
         // String path = request.getRequestURI();
         // String method = request.getMethod();
 

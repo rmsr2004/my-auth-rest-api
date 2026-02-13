@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.myauth.common.utils.ErrorDto;
-import com.myauth.infrastructure.security.exceptions.UserNotFoundException;
+import com.myauth.conf.spring.security.exceptions.UserNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
