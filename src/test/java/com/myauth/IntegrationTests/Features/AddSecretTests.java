@@ -17,13 +17,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
+import com.myauth.conf.spring.security.TokenService;
 import com.myauth.features.addsecret.AddSecretRequestDto;
 import com.myauth.features.addsecret.AddSecretResponseDto;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.ISecretRepository;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
-import com.myauth.infrastructure.security.TokenService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

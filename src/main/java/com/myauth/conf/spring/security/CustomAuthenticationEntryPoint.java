@@ -1,4 +1,4 @@
-package com.myauth.infrastructure.security;
+package com.myauth.conf.spring.security;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -20,19 +20,21 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(HttpServletRequest request, 
-                         HttpServletResponse response,
-                         AuthenticationException authException) throws IOException, ServletException {
+    public void commence(
+        HttpServletRequest request, 
+        HttpServletResponse response,
+        AuthenticationException authException
+    ) throws IOException, ServletException {
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
 
         ErrorDto errorDto = new ErrorDto(
-                OffsetDateTime.now().toString(),
-                HttpStatus.UNAUTHORIZED.value(),
-                "Unauthorized",
-                "Authentication is required to access this resource",
-                request.getRequestURI()
+            OffsetDateTime.now().toString(),
+            HttpStatus.UNAUTHORIZED.value(),
+            "Unauthorized",
+            "Authentication is required to access this resource",
+            request.getRequestURI()
         );
         
         response.getOutputStream().println(objectMapper.writeValueAsString(errorDto));

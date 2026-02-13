@@ -1,4 +1,4 @@
-package com.myauth.infrastructure.security;
+package com.myauth.conf.spring.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

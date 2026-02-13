@@ -1,4 +1,4 @@
-package com.myauth.conf.spring;
+package com.myauth.conf.spring.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
