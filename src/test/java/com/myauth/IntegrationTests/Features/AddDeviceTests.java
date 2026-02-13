@@ -112,8 +112,7 @@ class AddDeviceTests {
         
         deviceRepository.save(existingDevice);
 
-        User newUser = createUser("newUser");
-        authenticateUser(newUser);
+        authenticateUser(existingUser);
 
         AddDeviceRequest request = new AddDeviceRequest("device-2", "Normal Phone");
 
@@ -133,7 +132,7 @@ class AddDeviceTests {
 
         Device createdDevice = deviceRepository.findById("device-2").orElse(null);
         assertThat(createdDevice).isNotNull();
-        assertThat(createdDevice.getUser().getUsername()).isEqualTo("newUser");
+        assertThat(createdDevice.getUser().getUsername()).isEqualTo("existing");
         assertThat(createdDevice.getIsAdmin()).isFalse();
     }
 
