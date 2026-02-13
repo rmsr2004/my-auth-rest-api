@@ -23,7 +23,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/secrets")
@@ -65,6 +67,7 @@ public class AddSecretController {
         Result<Secret> result = handler.addSecret(user, secret, issuer);
 
         if (result.isFailure()) {
+            log.warn("Failed to add secret for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -76,6 +79,7 @@ public class AddSecretController {
             );
         }
         
+        log.info("Secret with ID: {} successfully added for user: {}", result.getValue().getId(), user.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new AddSecretResponseDto(
                 result.getValue().getId(),

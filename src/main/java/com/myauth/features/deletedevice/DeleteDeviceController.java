@@ -17,7 +17,9 @@ import com.myauth.infrastructure.db.entities.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/devices")
@@ -25,10 +27,16 @@ public class DeleteDeviceController {
     private final DeleteDeviceHandler handler;
 
     @DeleteMapping("/{deviceId}")
-    public ResponseEntity<?> deleteDevice(@AuthenticationPrincipal User user, HttpServletRequest request, @PathVariable String deviceId, @RequestHeader("Device-Id") String currentDeviceId) {
+    public ResponseEntity<?> deleteDevice(
+        @AuthenticationPrincipal User user, 
+        HttpServletRequest request, 
+        @PathVariable String deviceId, 
+        @RequestHeader("Device-Id") String currentDeviceId
+    ) {
         Result<Void> result = handler.deleteDeviceForUser(deviceId, user.getId(), currentDeviceId);
 
         if (result.isFailure()) {
+            log.warn("Failed to delete device with ID: {} for user: {} | Reason: {}", deviceId, user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -40,6 +48,7 @@ public class DeleteDeviceController {
             );
         }
 
+        log.info("Device with ID: {} successfully deleted for user: {}", deviceId, user.getUsername());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

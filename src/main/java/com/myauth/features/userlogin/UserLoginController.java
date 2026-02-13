@@ -21,7 +21,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/login")
@@ -58,6 +60,7 @@ public class UserLoginController {
         Result<String> result = handler.login(user);
 
         if (result.isFailure()) {
+            log.warn("Login failed for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
                     OffsetDateTime.now().toString(),
@@ -69,10 +72,11 @@ public class UserLoginController {
             );
         }
         
+        log.info("Login successful for user: {}", user.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(
             new LoginResponseDto(
                 result.getValue(),
-                "User successfully logged in!"
+                "User { " + user.getUsername() + " } successfully logged in!"
             )
         );
     }

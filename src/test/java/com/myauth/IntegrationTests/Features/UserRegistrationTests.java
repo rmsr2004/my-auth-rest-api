@@ -75,7 +75,7 @@ class UserRegistrationTests  {
 
         assertThat(result.id()).isEqualTo("1");
         assertThat(result.username()).isEqualTo("username");
-        assertThat(result.message()).isEqualTo("User successfully registered!");
+        assertThat(result.message()).isEqualTo("User { username } successfully registered!");
     }
 
     @Test

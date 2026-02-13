@@ -16,7 +16,9 @@ import com.myauth.common.utils.ErrorDto;
 import com.myauth.conf.spring.security.exceptions.UserNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -24,6 +26,8 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.joining("; "));
+
+        log.warn("Validation Error at {}: {}", request.getRequestURI(), errorMessage);
 
         return ResponseEntity.badRequest().body(
             new ErrorDto(
@@ -38,6 +42,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorDto> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
+        log.warn("User Not Found Error at {}: {}", request.getRequestURI(), ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),
@@ -51,6 +57,8 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorDto> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpServletRequest request) {
+        log.warn("No Handler Found Error at {}: {}", request.getRequestURI(), ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),
@@ -64,6 +72,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorDto> handleMissingRequestHeaderException(MissingRequestHeaderException ex, HttpServletRequest request) {
+        log.warn("Missing Request Header Error at {}: {}", request.getRequestURI(), ex.getMessage());
+        
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),
@@ -77,6 +87,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorDto> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+        log.warn("Method Not Allowed Error at {}: {}", request.getRequestURI(), ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),
@@ -90,6 +102,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGenericException(Exception ex, HttpServletRequest request) {
+        log.error("Internal Server Error at {}: {}", request.getRequestURI(), ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
             new ErrorDto(
                 OffsetDateTime.now().toString(),

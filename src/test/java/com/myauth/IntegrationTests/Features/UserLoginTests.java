@@ -77,7 +77,7 @@ class UserLoginTests {
         LoginResponseDto result = response.body();
 
         assertThat(result.token()).isNotNull();
-        assertThat(result.message()).isEqualTo("User successfully logged in!");
+        assertThat(result.message()).isEqualTo("User { username } successfully logged in!");
     }
 
     @Test
