@@ -1,5 +1,6 @@
 package com.myauth.infrastructure.db.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,5 @@ import com.myauth.infrastructure.db.entities.User;
 public interface IDeviceRepository extends JpaRepository<Device, String> {
     Optional<Device> findByUser(User user); 
     Boolean existsByUserAndId(User user, String deviceId);
+    List<Device> findAllByUserId(Long userId);
 }
