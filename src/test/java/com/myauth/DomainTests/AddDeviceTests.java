@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.myauth.common.utils.Errors;
@@ -44,7 +47,7 @@ public class AddDeviceTests {
         String name = "Pixel 8";
 
         when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
-        when(repository.count()).thenReturn(0L);
+        when(repository.getDevicesByUser(user)).thenReturn(List.of());
 
         // Act
         Result<Device> result = handler.addDevice(user, deviceId, name);
@@ -67,7 +70,7 @@ public class AddDeviceTests {
         String name = "iPhone";
 
         when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
-        when(repository.count()).thenReturn(5L);
+        when(repository.getDevicesByUser(user)).thenReturn(List.of(new Device()));
 
         // Act
         Result<Device> result = handler.addDevice(user, deviceId, name);
