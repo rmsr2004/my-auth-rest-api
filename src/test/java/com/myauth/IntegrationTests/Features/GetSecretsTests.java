@@ -20,8 +20,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 import com.myauth.conf.spring.security.TokenService;
-import com.myauth.features.getsecrets.GetSecretsResponseDto;
-import com.myauth.features.getsecrets.SecretDto;
+import com.myauth.features.Secret.getsecrets.GetSecretsResponse;
+import com.myauth.features.Secret.getsecrets.GetSecretsResponse.SecretDto;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.ISecretRepository;
@@ -76,13 +76,13 @@ class GetSecretsTests {
         fillDatabase(true, true);
         
         // Act
-        HttpResponse<GetSecretsResponseDto> response = HttpClient.get("/secrets", GetSecretsResponseDto.class);
+        HttpResponse<GetSecretsResponse> response = HttpClient.get("/secrets", GetSecretsResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(200);
         
-        GetSecretsResponseDto result = response.body();
+        GetSecretsResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.secrets()).hasSize(2);
@@ -103,13 +103,13 @@ class GetSecretsTests {
         fillDatabase(true, false);
         
         // Act
-        HttpResponse<GetSecretsResponseDto> response = HttpClient.get("/secrets", GetSecretsResponseDto.class);
+        HttpResponse<GetSecretsResponse> response = HttpClient.get("/secrets", GetSecretsResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(200);
         
-        GetSecretsResponseDto result = response.body();
+        GetSecretsResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.secrets()).isEmpty();

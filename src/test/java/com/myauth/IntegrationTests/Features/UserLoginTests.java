@@ -18,8 +18,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
-import com.myauth.features.userlogin.LoginRequestDto;
-import com.myauth.features.userlogin.LoginResponseDto;
+import com.myauth.features.User.userlogin.LoginRequest;
+import com.myauth.features.User.userlogin.LoginResponse;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
 
@@ -65,16 +65,16 @@ class UserLoginTests {
         user.setPassword(passwordEncoder.encode("password"));
         userRepository.save(user);
         
-        LoginRequestDto request = new LoginRequestDto("username", "password");
+        LoginRequest request = new LoginRequest("username", "password");
 
         // Act
-        HttpResponse<LoginResponseDto> response = HttpClient.put("/login", request, LoginResponseDto.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        LoginResponseDto result = response.body();
+        LoginResponse result = response.body();
 
         assertThat(result.token()).isNotNull();
         assertThat(result.message()).isEqualTo("User { username } successfully logged in!");
@@ -84,16 +84,16 @@ class UserLoginTests {
     @DisplayName("Should return 404 when user does not exist")
     void UserLogin_ShouldReturn404_WhenUserDoesNotExist() {
         // Arrange
-        LoginRequestDto request = new LoginRequestDto("nonexistentuser", "password");
+        LoginRequest request = new LoginRequest("nonexistentuser", "password");
 
         // Act
-        HttpResponse<LoginResponseDto> response = HttpClient.put("/login", request, LoginResponseDto.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         
-        LoginResponseDto result = response.body();
+        LoginResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.token()).isNull();
@@ -109,16 +109,16 @@ class UserLoginTests {
         user.setPassword(passwordEncoder.encode("correctpassword"));
         userRepository.save(user);
 
-        LoginRequestDto request = new LoginRequestDto("username", "wrongpassword");
+        LoginRequest request = new LoginRequest("username", "wrongpassword");
 
         // Act
-        HttpResponse<LoginResponseDto> response = HttpClient.put("/login", request, LoginResponseDto.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 
-        LoginResponseDto result = response.body();
+        LoginResponse result = response.body();
         
         assertThat(result).isNotNull();
         assertThat(result.token()).isNull();
