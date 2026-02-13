@@ -1,4 +1,4 @@
-package com.myauth.conf.spring;
+package com.myauth.conf.spring.startup;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
