@@ -87,7 +87,7 @@ class DeleteSecretTests {
         secretRepository.save(secret);
 
         // Act
-        HttpResponse<Void> response = HttpClient.delete("/secrets/" + secret.getId(), Void.class);
+        HttpResponse<Void> response = HttpClient.delete("/secrets/" + secret.getId(), null, Void.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -112,7 +112,7 @@ class DeleteSecretTests {
         Long nonExistentId = 9999L;
 
         // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + nonExistentId, ErrorDto.class);
+        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + nonExistentId, null, ErrorDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -148,7 +148,7 @@ class DeleteSecretTests {
         HttpClient.setAuthToken(attackerToken);
 
         // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + victimSecret.getId(), ErrorDto.class);
+        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + victimSecret.getId(), null, ErrorDto.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -166,7 +166,7 @@ class DeleteSecretTests {
         Long anyId = 1L;
 
         // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + anyId, ErrorDto.class);
+        HttpResponse<ErrorDto> response = HttpClient.delete("/secrets/" + anyId, null, ErrorDto.class);
 
         // Assert
         assertThat(response).isNotNull();
