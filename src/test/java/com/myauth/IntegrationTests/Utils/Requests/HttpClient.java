@@ -21,22 +21,22 @@ public class HttpClient {
     private static String authToken;
 
     public static <TResponse> HttpResponse<TResponse> get(String endpoint, Class<TResponse> responseType) {
-        return doRequest("GET", endpoint, null, responseType);
+        return doRequest("GET", endpoint, null, null, responseType);
     } 
 
     public static <TRequest, TResponse> HttpResponse<TResponse> post(String endpoint, TRequest request, Class<TResponse> responseType) {
-        return doRequest("POST", endpoint, request, responseType);
+        return doRequest("POST", endpoint, request, null, responseType);
     }
 
     public static <TRequest, TResponse> HttpResponse<TResponse> put(String endpoint, TRequest request, Class<TResponse> responseType) {
-        return doRequest("PUT", endpoint, request, responseType);
+        return doRequest("PUT", endpoint, request, null, responseType);
     }
 
-    public static <TResponse> HttpResponse<TResponse> delete(String endpoint, Class<TResponse> responseType) {
-        return doRequest("DELETE", endpoint, null, responseType);
+    public static <TResponse> HttpResponse<TResponse> delete(String endpoint, String deviceId, Class<TResponse> responseType) {
+        return doRequest("DELETE", endpoint, null, deviceId, responseType);
     }
 
-    private static <TRequest, TResponse> HttpResponse<TResponse> doRequest(String method, String endpoint, TRequest request, Class<TResponse> responseType) {
+    private static <TRequest, TResponse> HttpResponse<TResponse> doRequest(String method, String endpoint, TRequest request, String deviceId, Class<TResponse> responseType) {
         try {
             URL url = URI.create(serverAddress + endpoint).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -47,6 +47,10 @@ public class HttpClient {
             
             if (authToken != null && !authToken.isEmpty()) {
                 connection.setRequestProperty("Authorization", "Bearer " + authToken);
+            }
+
+            if (deviceId != null && !deviceId.isEmpty()) {
+                connection.setRequestProperty("Device-Id", deviceId);
             }
 
             if (request != null) {
