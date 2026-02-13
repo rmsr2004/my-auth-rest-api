@@ -19,8 +19,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 import com.myauth.common.utils.ErrorDto;
-import com.myauth.features.userregistration.RegisterRequestDto;
-import com.myauth.features.userregistration.RegisterResponseDto;
+import com.myauth.features.User.userregistration.RegisterRequest;
+import com.myauth.features.User.userregistration.RegisterResponse;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
 
@@ -62,16 +62,16 @@ class UserRegistrationTests  {
     @DisplayName("Should return user details when user is valid")
     void UserRegistration_ShouldReturn201_WhenRequestIsValid() {
         // Arrange
-        RegisterRequestDto request = new RegisterRequestDto("username", "password");
+        RegisterRequest request = new RegisterRequest("username", "password");
 
         // Act
-        HttpResponse<RegisterResponseDto> response = HttpClient.post("/register", request, RegisterResponseDto.class);
+        HttpResponse<RegisterResponse> response = HttpClient.post("/register", request, RegisterResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        RegisterResponseDto result = response.body();
+        RegisterResponse result = response.body();
 
         assertThat(result.id()).isEqualTo("1");
         assertThat(result.username()).isEqualTo("username");
@@ -87,7 +87,7 @@ class UserRegistrationTests  {
         existingUser.setPassword("password");
         userRepository.save(existingUser);
 
-        RegisterRequestDto request = new RegisterRequestDto("username", "password");
+        RegisterRequest request = new RegisterRequest("username", "password");
 
         // Act
         HttpResponse<ErrorDto> secondResponse = HttpClient.post("/register", request, ErrorDto.class);

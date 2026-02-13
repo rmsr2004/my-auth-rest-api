@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.myauth.common.utils.Errors;
 import com.myauth.common.utils.Result;
-import com.myauth.features.userregistration.UserRegistrationHandler;
+import com.myauth.features.User.userregistration.UserRegistrationHandler;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
 

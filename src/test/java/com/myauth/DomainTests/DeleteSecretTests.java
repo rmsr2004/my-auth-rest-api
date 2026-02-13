@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.myauth.common.utils.Errors;
 import com.myauth.common.utils.Result;
-import com.myauth.features.deletesecret.DeleteSecretHandler;
+import com.myauth.features.Secret.deletesecret.DeleteSecretHandler;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.ISecretRepository;

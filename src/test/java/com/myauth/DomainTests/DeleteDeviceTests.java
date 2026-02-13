@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.myauth.common.utils.Errors;
 import com.myauth.common.utils.Result;
-import com.myauth.features.deletedevice.DeleteDeviceHandler;
+import com.myauth.features.Device.deletedevice.DeleteDeviceHandler;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
 

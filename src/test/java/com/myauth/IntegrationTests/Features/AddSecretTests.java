@@ -18,8 +18,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 import com.myauth.conf.spring.security.TokenService;
-import com.myauth.features.addsecret.AddSecretRequestDto;
-import com.myauth.features.addsecret.AddSecretResponseDto;
+import com.myauth.features.Secret.addsecret.AddSecretRequest;
+import com.myauth.features.Secret.addsecret.AddSecretResponse;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.ISecretRepository;
@@ -83,16 +83,16 @@ class AddSecretTests {
         String secret = "mySecret";
         String issuer = "myIssuer";
 
-        AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
+        AddSecretRequest request = new AddSecretRequest(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponse> response = HttpClient.post("/secrets", request, AddSecretResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(201);
 
-        AddSecretResponseDto result = response.body();
+        AddSecretResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.id()).isNotNull();
@@ -125,16 +125,16 @@ class AddSecretTests {
         
         secretRepository.save(existingSecret);
 
-        AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
+        AddSecretRequest request = new AddSecretRequest(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponse> response = HttpClient.post("/secrets", request, AddSecretResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
 
-        AddSecretResponseDto result = response.body();
+        AddSecretResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.message()).isEqualTo("Issuer already exists!");
@@ -147,16 +147,16 @@ class AddSecretTests {
         String secret = "mysecret";
         String issuer = "myissuer";
         
-        AddSecretRequestDto request = new AddSecretRequestDto(secret, issuer);
+        AddSecretRequest request = new AddSecretRequest(secret, issuer);
         
         // Act
-        HttpResponse<AddSecretResponseDto> response = HttpClient.post("/secrets", request, AddSecretResponseDto.class);
+        HttpResponse<AddSecretResponse> response = HttpClient.post("/secrets", request, AddSecretResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 
-        AddSecretResponseDto result = response.body();
+        AddSecretResponse result = response.body();
 
         assertThat(result).isNotNull();
         assertThat(result.message()).isEqualTo("Authentication is required to access this resource");
