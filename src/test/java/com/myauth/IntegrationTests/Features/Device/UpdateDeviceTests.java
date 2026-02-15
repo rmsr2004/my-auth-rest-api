@@ -1,6 +1,4 @@
-package com.myauth.IntegrationTests.Features;
-
-import java.util.Optional;
+package com.myauth.IntegrationTests.Features.Device;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +20,8 @@ import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
 import com.myauth.common.utils.ErrorDto;
 import com.myauth.common.utils.Errors;
 import com.myauth.conf.spring.security.TokenService;
+import com.myauth.features.Device.updatedevice.UpdateDeviceRequest;
+import com.myauth.features.Device.updatedevice.UpdateDeviceResponse;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
@@ -30,8 +30,8 @@ import com.myauth.infrastructure.db.repositories.IUserRepository;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Testcontainers
-@DisplayName("Delete Device Integration Tests")
-class DeleteDeviceTests {
+@DisplayName("Update Device Integration Tests")
+class UpdateDeviceTests {
 
     @Autowired
     private IDeviceRepository deviceRepository;
@@ -63,80 +63,91 @@ class DeleteDeviceTests {
     void setup() {
         deviceRepository.deleteAll();
         userRepository.deleteAll();
-        
-        // Configuração padrão para casos que não usam o helper customizado
+
         HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
-        HttpClient.setAuthToken("");
     }
 
     @Test
-    @DisplayName("Should return 204 No Content when admin deletes another device successfully")
-    void DeleteDevice_ShouldReturn204_WhenAdminDeletesTarget() {
+    @DisplayName("Should update device name successfully when requester is Admin")
+    void updateDevice_ShouldUpdateName_WhenRequesterIsAdmin() {
         // Arrange
         User user = createUser("adminUser");
         String authToken = tokenService.generateToken(user);
         HttpClient.setAuthToken(authToken);
 
-        createDevice(user, "admin-device-id", "Admin Phone", true);
-        createDevice(user, "target-device-id", "Old Phone", false);
+        createDevice(user, "admin-device-id", "Admin Phone", true);        
+        createDevice(user, "target-device-id", "Old Name", false);
+
+        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
 
         // Act
-        HttpResponse<Void> response = HttpClient.delete("/devices/target-device-id", "admin-device-id", Void.class);
+        HttpResponse<UpdateDeviceResponse> response = HttpClient.put("/devices/target-device-id", request, "admin-device-id", UpdateDeviceResponse.class);
 
         // Assert
-        assertThat(response).isNotNull();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
-        Optional<Device> deletedDevice = deviceRepository.findById("target-device-id");
-        assertThat(deletedDevice).isEmpty();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         
-        Optional<Device> adminDevice = deviceRepository.findById("admin-device-id");
-        assertThat(adminDevice).isPresent();
+        UpdateDeviceResponse body = response.body();
+        assertThat(body.name()).isEqualTo("New Name");
+        
+        Device updatedDevice = deviceRepository.findById("target-device-id").orElseThrow();
+        assertThat(updatedDevice.getName()).isEqualTo("New Name");
+        assertThat(updatedDevice.getIsAdmin()).isFalse(); // Admin status não mudou
     }
 
     @Test
-    @DisplayName("Should return 403 Forbidden when normal user tries to delete a device")
-    void DeleteDevice_ShouldReturn403_WhenUserIsNotAdmin() {
+    @DisplayName("Should transfer admin status successfully")
+    void updateDevice_ShouldTransferAdmin_WhenRequested() {
+        // Arrange
+        User user = createUser("transferUser");
+        String authToken = tokenService.generateToken(user);
+        HttpClient.setAuthToken(authToken);
+
+        createDevice(user, "current-admin-id", "Current Admin", true);
+        createDevice(user, "future-admin-id", "Future Admin", false);
+
+        UpdateDeviceRequest request = new UpdateDeviceRequest(null, true);
+
+        // Act
+        HttpResponse<UpdateDeviceResponse> response = HttpClient.put("/devices/future-admin-id", request, "current-admin-id", UpdateDeviceResponse.class);
+
+        // Assert
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().isAdmin()).isTrue();
+
+        Device target = deviceRepository.findById("future-admin-id").orElseThrow();
+        assertThat(target.getIsAdmin()).isTrue();
+
+        Device requester = deviceRepository.findById("current-admin-id").orElseThrow();
+        assertThat(requester.getIsAdmin()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should return 403 Forbidden when requester is not Admin")
+    void updateDevice_ShouldReturn403_WhenRequesterIsNotAdmin() {
         // Arrange
         User user = createUser("normalUser");
         String authToken = tokenService.generateToken(user);
         HttpClient.setAuthToken(authToken);
 
         createDevice(user, "normal-device-id", "Normal Phone", false);
-        createDevice(user, "target-device-id", "Other Phone", false);
+        createDevice(user, "target-device-id", "Target", false);
+
+        UpdateDeviceRequest request = new UpdateDeviceRequest("Hacker Name", true);
 
         // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/target-device-id", "normal-device-id", ErrorDto.class);
+        HttpResponse<ErrorDto> response = HttpClient.put("/devices/target-device-id", request, "normal-device-id", ErrorDto.class);
 
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
         assertThat(response.body().message()).isEqualTo(Errors.DEVICE_FORBIDDEN.message());
         
-        assertThat(deviceRepository.findById("target-device-id")).isPresent();
-    }
-
-    @Test
-    @DisplayName("Should return 403 Forbidden when device tries to delete itself")
-    void DeleteDevice_ShouldReturn403_WhenDeletingSelf() {
-        // Arrange
-        User user = createUser("suicideUser");
-        String authToken = tokenService.generateToken(user);
-        HttpClient.setAuthToken(authToken);
-
-        createDevice(user, "admin-device-id", "Admin Phone", true);
-
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/admin-device-id", "admin-device-id", ErrorDto.class);
-
-        // Assert
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
-        assertThat(response.body().message()).isEqualTo(Errors.DEVICE_FORBIDDEN.message());
-        
-        assertThat(deviceRepository.findById("admin-device-id")).isPresent();
+        Device target = deviceRepository.findById("target-device-id").orElseThrow();
+        assertThat(target.getName()).isEqualTo("Target");
     }
 
     @Test
     @DisplayName("Should return 404 Not Found when target device does not exist")
-    void DeleteDevice_ShouldReturn404_WhenTargetDeviceNotFound() {
+    void updateDevice_ShouldReturn404_WhenTargetNotFound() {
         // Arrange
         User user = createUser("searchUser");
         String authToken = tokenService.generateToken(user);
@@ -144,8 +155,10 @@ class DeleteDeviceTests {
 
         createDevice(user, "admin-device-id", "Admin Phone", true);
 
+        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+
         // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/non-existent-id", "admin-device-id", ErrorDto.class);
+        HttpResponse<ErrorDto> response = HttpClient.put("/devices/non-existent-id", request, "admin-device-id", ErrorDto.class);
 
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
@@ -154,46 +167,22 @@ class DeleteDeviceTests {
 
     @Test
     @DisplayName("Should return 404 Not Found when requesting device (header) does not exist")
-    void DeleteDevice_ShouldReturn404_WhenCurrentDeviceNotFound() {
+    void updateDevice_ShouldReturn404_WhenCurrentDeviceNotFound() {
         // Arrange
         User user = createUser("ghostUser");
         String authToken = tokenService.generateToken(user);
         HttpClient.setAuthToken(authToken);
 
-        createDevice(user, "target-device-id", "Target Phone", false);
+        createDevice(user, "target-device-id", "Target", false);
 
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/target-device-id", "ghost-device-id", ErrorDto.class);
+        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+
+        // Act
+        HttpResponse<ErrorDto> response = HttpClient.put("/devices/target-device-id", request, "ghost-device-id", ErrorDto.class);
 
         // Assert
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(response.body().message()).isEqualTo(Errors.DEVICE_NOT_FOUND.message());
-    }
-
-    @Test
-    @DisplayName("Should return 400 Bad Request when Device-Id header is missing")
-    void DeleteDevice_ShouldReturn400_WhenHeaderMissing() {
-        // Arrange
-        User user = createUser("headerlessUser");
-        String authToken = tokenService.generateToken(user);
-        HttpClient.setAuthToken(authToken);
-
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/any-id", null, ErrorDto.class);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().message()).contains("Required request header 'Device-Id' is missing");
-    }
-
-    @Test
-    @DisplayName("Should return 401 Unauthorized when user is not logged in")
-    void DeleteDevice_ShouldReturn401_WhenNotAuthenticated() {
-        // Arrange
-        HttpClient.setAuthToken("");
-
-        // Act
-        HttpResponse<ErrorDto> response = HttpClient.delete("/devices/any-id", "any-device", ErrorDto.class);
-
-        // Assert
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     // --- Helpers ---

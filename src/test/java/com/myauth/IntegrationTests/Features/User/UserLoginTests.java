@@ -1,4 +1,4 @@
-package com.myauth.IntegrationTests.Features;
+package com.myauth.IntegrationTests.Features.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +68,7 @@ class UserLoginTests {
         LoginRequest request = new LoginRequest("username", "password");
 
         // Act
-        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, null, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -87,7 +87,7 @@ class UserLoginTests {
         LoginRequest request = new LoginRequest("nonexistentuser", "password");
 
         // Act
-        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, null, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();
@@ -112,7 +112,7 @@ class UserLoginTests {
         LoginRequest request = new LoginRequest("username", "wrongpassword");
 
         // Act
-        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, LoginResponse.class);
+        HttpResponse<LoginResponse> response = HttpClient.put("/login", request, null, LoginResponse.class);
 
         // Assert
         assertThat(response).isNotNull();

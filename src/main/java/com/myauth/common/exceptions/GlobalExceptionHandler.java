@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -95,6 +96,21 @@ public class GlobalExceptionHandler {
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
                 "Method Not Allowed",
                 "The HTTP method '" + ex.getMethod() + "' is not supported for this endpoint.",
+                request.getRequestURI()
+            )
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        log.warn("Malformed JSON Error at {}: {}", request.getRequestURI(), ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new ErrorDto(
+                OffsetDateTime.now().toString(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                "Malformed JSON in request body.",
                 request.getRequestURI()
             )
         );

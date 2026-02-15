@@ -1,4 +1,4 @@
-package com.myauth.IntegrationTests.Features;
+package com.myauth.IntegrationTests.Features.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.myauth.IntegrationTests.Features;
+package com.myauth.IntegrationTests.Features.Device;
 
 import java.util.List;
 

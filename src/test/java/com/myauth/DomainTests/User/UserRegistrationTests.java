@@ -1,4 +1,4 @@
-package com.myauth.DomainTests;
+package com.myauth.DomainTests.User;
 
 import java.util.Optional;
 
