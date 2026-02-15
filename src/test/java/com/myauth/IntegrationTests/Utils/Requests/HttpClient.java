@@ -28,8 +28,8 @@ public class HttpClient {
         return doRequest("POST", endpoint, request, null, responseType);
     }
 
-    public static <TRequest, TResponse> HttpResponse<TResponse> put(String endpoint, TRequest request, Class<TResponse> responseType) {
-        return doRequest("PUT", endpoint, request, null, responseType);
+    public static <TRequest, TResponse> HttpResponse<TResponse> put(String endpoint, TRequest request, String deviceId,Class<TResponse> responseType) {
+        return doRequest("PUT", endpoint, request, deviceId, responseType);
     }
 
     public static <TResponse> HttpResponse<TResponse> delete(String endpoint, String deviceId, Class<TResponse> responseType) {

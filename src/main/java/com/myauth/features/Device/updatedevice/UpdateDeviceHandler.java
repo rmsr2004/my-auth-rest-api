@@ -1,0 +1,52 @@
+package com.myauth.features.Device.updatedevice;
+
+import org.springframework.stereotype.Service;
+
+import com.myauth.common.utils.Errors;
+import com.myauth.common.utils.Result;
+import com.myauth.infrastructure.db.entities.Device;
+import com.myauth.infrastructure.db.entities.User;
+import com.myauth.infrastructure.db.repositories.IDeviceRepository;
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+@Service
+public class UpdateDeviceHandler {
+    private final IDeviceRepository repository;
+
+    public Result<Device> updateDeviceForUser(
+        String deviceIdToUpdate, 
+        User user, 
+        String currentDeviceId, 
+        UpdateDeviceRequest body
+    ) {
+        Device currentDevice = repository.findByUserAndId(user, currentDeviceId).orElse(null);
+        if (currentDevice == null) {
+            return Result.failure(Errors.DEVICE_NOT_FOUND);
+        }   
+
+        Device deviceToUpdate = repository.findByUserAndId(user, deviceIdToUpdate).orElse(null);
+        if (deviceToUpdate == null) {
+            return Result.failure(Errors.DEVICE_NOT_FOUND);
+        }
+
+        if (currentDevice.getIsAdmin() == false) {
+            return Result.failure(Errors.DEVICE_FORBIDDEN);
+        }
+
+        if (body.name() != null && !body.name().trim().isEmpty()) {
+            deviceToUpdate.setName(body.name());
+        }
+
+        if (body.isAdmin() != null) {
+            deviceToUpdate.setIsAdmin(body.isAdmin());
+            currentDevice.setIsAdmin(false);
+            repository.save(currentDevice);
+        }
+
+        repository.save(deviceToUpdate);
+
+        return Result.success(deviceToUpdate);
+    }
+}
