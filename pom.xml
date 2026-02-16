@@ -206,6 +206,7 @@
                 <configuration>
                     <includes>
                         <include>**/IntegrationTests/Features/*/*Tests.java</include>
+                        <include>**/IntegrationTests/Configuration/*/*Tests.java</include>
                     </includes>
                     <consoleOutputReporter>
                         <disable>true</disable>
