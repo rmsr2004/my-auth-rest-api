@@ -1,4 +1,4 @@
-package com.myauth.common.utils;
+package com.myauth.shared.result;
 
 import org.springframework.http.HttpStatus;
 

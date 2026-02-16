@@ -1,4 +1,4 @@
-package com.myauth.conf.spring.security;
+package com.myauth.config;
 
 import java.util.List;
 

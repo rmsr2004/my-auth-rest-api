@@ -12,12 +12,12 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.myauth.common.utils.Result;
 import com.myauth.features.Secret.getsecrets.GetSecretsHandler;
 import com.myauth.features.Secret.getsecrets.GetSecretsResponse.SecretDto;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.ISecretRepository;
+import com.myauth.shared.result.Result;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Get Secrets Unit Tests")

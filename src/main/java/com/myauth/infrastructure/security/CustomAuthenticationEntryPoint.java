@@ -1,4 +1,4 @@
-package com.myauth.conf.spring.security;
+package com.myauth.infrastructure.security;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -9,7 +9,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myauth.common.utils.ErrorDto;
+import com.myauth.shared.result.ErrorDto;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

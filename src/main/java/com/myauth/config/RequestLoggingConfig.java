@@ -1,4 +1,4 @@
-package com.myauth.conf.spring.logging;
+package com.myauth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

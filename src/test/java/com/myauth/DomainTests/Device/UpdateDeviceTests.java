@@ -15,13 +15,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.myauth.common.utils.Errors;
-import com.myauth.common.utils.Result;
 import com.myauth.features.Device.updatedevice.UpdateDeviceHandler;
 import com.myauth.features.Device.updatedevice.UpdateDeviceRequest;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
+import com.myauth.shared.result.Errors;
+import com.myauth.shared.result.Result;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Update Device Unit Tests")
@@ -39,6 +39,7 @@ class UpdateDeviceTests {
     private final String TARGET_DEVICE_ID = "target-dev-id";
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setup() {
         user = new User();
         user.setId(1L);

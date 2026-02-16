@@ -1,4 +1,4 @@
-package com.myauth.common.exceptions;
+package com.myauth.infrastructure.web;
 
 import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.myauth.common.utils.ErrorDto;
-import com.myauth.conf.spring.security.exceptions.UserNotFoundException;
+import com.myauth.shared.exceptions.UserNotFoundException;
+import com.myauth.shared.result.ErrorDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

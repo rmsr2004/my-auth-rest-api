@@ -1,4 +1,4 @@
-package com.myauth.conf.spring.security;
+package com.myauth.infrastructure.security;
 
 import java.util.ArrayList;
 

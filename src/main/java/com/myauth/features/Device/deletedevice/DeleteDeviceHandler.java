@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.myauth.common.utils.Errors;
-import com.myauth.common.utils.Result;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
+import com.myauth.shared.result.Errors;
+import com.myauth.shared.result.Result;
 
 import lombok.AllArgsConstructor;
 

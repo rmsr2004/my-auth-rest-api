@@ -1,4 +1,4 @@
-package com.myauth.conf.spring.logging;
+package com.myauth.infrastructure.web;
 
 import java.util.UUID;
 

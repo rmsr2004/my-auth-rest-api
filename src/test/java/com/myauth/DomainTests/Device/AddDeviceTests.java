@@ -15,12 +15,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.myauth.common.utils.Errors;
-import com.myauth.common.utils.Result;
 import com.myauth.features.Device.adddevice.AddDeviceHandler;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
+import com.myauth.shared.result.Errors;
+import com.myauth.shared.result.Result;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Add Device Unit Tests")

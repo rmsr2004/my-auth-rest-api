@@ -68,6 +68,7 @@ class CorsConfigTests {
         mockMvc.perform(options("/api/auth/login")
                 .header("Origin", TRUSTED_ORIGIN)
                 .header("Access-Control-Request-Method", "POST")
+                
                 .header("Access-Control-Request-Headers", requestedHeaders))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Headers", containsString("Device-Id")))

@@ -14,12 +14,12 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.myauth.common.utils.Errors;
-import com.myauth.common.utils.Result;
-import com.myauth.conf.spring.security.TokenService;
 import com.myauth.features.User.userlogin.UserLoginHandler;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
+import com.myauth.infrastructure.security.TokenService;
+import com.myauth.shared.result.Errors;
+import com.myauth.shared.result.Result;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Login Unit Tests")
