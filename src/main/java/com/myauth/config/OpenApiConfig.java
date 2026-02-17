@@ -39,7 +39,7 @@ public class OpenApiConfig {
                 .components(
                     new Components()
                         .addSecuritySchemes(
-                        "bearerAuth", 
+                            "bearerAuth", 
                             new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")

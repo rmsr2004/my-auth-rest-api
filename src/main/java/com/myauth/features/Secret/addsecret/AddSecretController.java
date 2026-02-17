@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myauth.common.utils.ErrorDto;
-import com.myauth.common.utils.Result;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
+import com.myauth.shared.result.ErrorDto;
+import com.myauth.shared.result.Result;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

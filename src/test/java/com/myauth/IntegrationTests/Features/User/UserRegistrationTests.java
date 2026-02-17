@@ -18,11 +18,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.myauth.IntegrationTests.Utils.Requests.HttpClient;
 import com.myauth.IntegrationTests.Utils.Requests.HttpResponse;
-import com.myauth.common.utils.ErrorDto;
 import com.myauth.features.User.userregistration.RegisterRequest;
 import com.myauth.features.User.userregistration.RegisterResponse;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
+import com.myauth.shared.result.ErrorDto;
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -45,6 +45,7 @@ class UserRegistrationTests  {
         .withPassword("test");
 
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
@@ -52,6 +53,7 @@ class UserRegistrationTests  {
     }
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setup() {
         jdbcTemplate.execute("TRUNCATE TABLE users RESTART IDENTITY CASCADE");
 
