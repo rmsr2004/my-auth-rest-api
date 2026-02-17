@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
 import com.myauth.shared.result.Result;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name="Device Management", description="Endpoints for managing user devices")
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/devices")
+@RequestMapping("/devices")
 public class DeleteDeviceController {
     private final DeleteDeviceHandler handler;
 
@@ -44,6 +45,7 @@ public class DeleteDeviceController {
             schema=@Schema(implementation = ErrorDto.class)
         ))
     })
+    @ApiVersion("1")
     @DeleteMapping("/{deviceId}")
     public ResponseEntity<?> deleteDevice(
         @AuthenticationPrincipal User user, 

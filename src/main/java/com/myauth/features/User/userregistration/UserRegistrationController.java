@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
 import com.myauth.shared.result.Result;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name="Authentication", description="Endpoints for user registration and account creation")
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/auth/register")
+@RequestMapping("/auth/register")
 public class UserRegistrationController {
     public final UserRegistrationHandler handler;
 
@@ -43,6 +44,7 @@ public class UserRegistrationController {
             schema=@Schema(implementation = ErrorDto.class)
         ))
     })
+    @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest body, HttpServletRequest request) {
         User user = body.toUser();

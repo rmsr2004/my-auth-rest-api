@@ -64,8 +64,7 @@ class DeleteDeviceTests {
         deviceRepository.deleteAll();
         userRepository.deleteAll();
         
-        // Configuração padrão para casos que não usam o helper customizado
-        HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
+        HttpClient.setServerAddress("http://localhost:" + port + "/api/v1");
         HttpClient.setAuthToken("");
     }
 

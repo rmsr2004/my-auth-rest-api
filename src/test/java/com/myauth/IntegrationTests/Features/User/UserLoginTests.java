@@ -53,7 +53,7 @@ class UserLoginTests {
     @BeforeEach
     void setup() {
         userRepository.deleteAll();
-        HttpClient.setServerAddress("http://localhost:" + port + "/api/auth");
+        HttpClient.setServerAddress("http://localhost:" + port + "/api/v1/auth");
     }
 
     @Test

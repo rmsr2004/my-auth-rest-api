@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Tag(name="Device Management", description="Endpoints for managing user devices")
 @RestController
-@RequestMapping("api/auth/devices")
+@RequestMapping("/devices")
 @AllArgsConstructor
 public class AddDeviceController {
     private final AddDeviceHandler handler;
@@ -45,6 +46,7 @@ public class AddDeviceController {
             schema=@Schema(implementation=ErrorDto.class)
         ))
     })
+    @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> addDevice(@Valid @RequestBody AddDeviceRequest body, @AuthenticationPrincipal User user, HttpServletRequest request) {
         Result<Device> result = handler.addDevice(user, body.id(), body.name());

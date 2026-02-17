@@ -1,10 +1,5 @@
 package com.myauth.IntegrationTests.Configuration.Security;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.myauth.infrastructure.security.TokenService;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IUserRepository;
+import com.myauth.infrastructure.security.TokenService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,7 +42,7 @@ class SecurityIntegrationTests {
     @Test
     @DisplayName("Should allow access to Login endpoint without token")
     void shouldAllowPublicLogin() throws Exception {
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized()); 
     }
@@ -51,7 +50,7 @@ class SecurityIntegrationTests {
     @Test
     @DisplayName("Should allow access to Register endpoint without token")
     void shouldAllowPublicRegister() throws Exception {
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -66,14 +65,14 @@ class SecurityIntegrationTests {
     @Test
     @DisplayName("Should BLOCK access to protected endpoints without token")
     void shouldBlockProtectedEndpointNoToken() throws Exception {
-        mockMvc.perform(get("/api/auth/devices"))
+        mockMvc.perform(get("/api/v1/devices"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("Should BLOCK access with INVALID token")
     void shouldBlockProtectedEndpointInvalidToken() throws Exception {
-        mockMvc.perform(get("/api/auth/devices")
+        mockMvc.perform(get("/api/v1/devices")
                 .header("Authorization", "Bearer token_falso_12345"))
                 .andExpect(status().isUnauthorized());
     }
@@ -81,7 +80,7 @@ class SecurityIntegrationTests {
     @Test
     @DisplayName("Should BLOCK access with Malformed header")
     void shouldBlockMalformedHeader() throws Exception {
-        mockMvc.perform(get("/api/auth/devices")
+        mockMvc.perform(get("/api/v1/devices")
                 .header("Authorization", "token_sem_bearer"))
                 .andExpect(status().isUnauthorized());
     }
@@ -96,7 +95,7 @@ class SecurityIntegrationTests {
 
         String validToken = tokenService.generateToken(user);
 
-        mockMvc.perform(get("/api/auth/devices")
+        mockMvc.perform(get("/api/v1/devices")
                 .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk());
     }
@@ -110,7 +109,7 @@ class SecurityIntegrationTests {
         userRepository.save(user);
         String token = tokenService.generateToken(user);
 
-        mockMvc.perform(get("/api/auth/devices")
+        mockMvc.perform(get("/api/v1/devices")
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist("JSESSIONID"));

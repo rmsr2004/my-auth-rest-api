@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
 import com.myauth.shared.result.Result;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name="Authentication", description="Endpoints for user authentication and login")
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/login")
+@RequestMapping("/auth/login")
 public class UserLoginController {
     public final UserLoginHandler handler;
 
@@ -47,6 +48,7 @@ public class UserLoginController {
             schema=@Schema(implementation=ErrorDto.class)
         ))
     })
+    @ApiVersion("1")
     @PutMapping
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest body, HttpServletRequest request) {
         User user = body.toUser();
