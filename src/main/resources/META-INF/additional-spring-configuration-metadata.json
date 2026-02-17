@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "api.cors.origins",
+    "type": "java.lang.String",
+    "description": "Frontend URL for CORS configuration"
+  },
+  {
+    "name": "api.security.token.expiration",
+    "type": "java.lang.String",
+    "description": "Expiration time for JWT tokens in milliseconds"
+  },
+  {
+    "name": "api.security.token.secret",
+    "type": "java.lang.String",
+    "description": "Secret key for signing JWT tokens"
+  }
+]}
