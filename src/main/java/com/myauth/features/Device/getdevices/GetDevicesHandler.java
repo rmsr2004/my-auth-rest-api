@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.myauth.common.utils.Result;
 import com.myauth.features.Device.getdevices.GetDevicesResponse.DeviceDto;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.infrastructure.db.repositories.IDeviceRepository;
+import com.myauth.shared.result.Result;
 
 import lombok.AllArgsConstructor;
 
