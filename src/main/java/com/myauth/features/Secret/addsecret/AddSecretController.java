@@ -20,12 +20,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Secrets", description="Endpoints for managing user secrets")
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/secrets")
@@ -38,25 +40,9 @@ public class AddSecretController {
             mediaType="application/json",
             schema=@Schema(implementation=AddSecretResponse.class)
         )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="409", description="Conflict", content=@Content(
+        @ApiResponse(responseCode="409", description="Secret already exists for this user", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
         ))
     })
     @PostMapping

@@ -20,11 +20,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Device Management", description="Endpoints for managing user devices")
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/devices")
@@ -36,18 +38,6 @@ public class GetDevicesController {
         @ApiResponse(responseCode="200", description="User successfully retrieved devices", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=GetDevicesResponse.class)
-        )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation=ErrorDto.class)
         ))
     })
     @GetMapping

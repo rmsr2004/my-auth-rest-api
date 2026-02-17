@@ -20,11 +20,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Secrets", description="Endpoints for managing user secrets")
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/secrets")
@@ -33,21 +35,9 @@ public class GetSecretsController {
 
     @Operation(summary="Gets secrets for a specific user")
     @ApiResponses(value={
-        @ApiResponse(responseCode="200", description="User successfully retrieved secrets", content=@Content(
+        @ApiResponse(responseCode="200", description="Secrets successfully retrieved", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=GetSecretsResponse.class)
-        )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation=ErrorDto.class)
         ))
     })
     @GetMapping
@@ -58,11 +48,11 @@ public class GetSecretsController {
             log.warn("Failed to retrieve secrets for user: {} | Reason: {}", user.getUsername(), result.getError());
             return ResponseEntity.status(result.getError().code()).body(
                 new ErrorDto(
-                        OffsetDateTime.now().toString(),
-                        result.getError().code().value(),
-                        result.getError().code().getReasonPhrase(),
-                        result.getError().message(),
-                        request.getRequestURI()
+                    OffsetDateTime.now().toString(),
+                    result.getError().code().value(),
+                    result.getError().code().getReasonPhrase(),
+                    result.getError().message(),
+                    request.getRequestURI()
                 )
             );
         }
