@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.infrastructure.db.entities.Secret;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name="Secrets", description="Endpoints for managing user secrets")
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/secrets")
+@RequestMapping("/secrets")
 public class AddSecretController {
     private final AddSecretHandler handler;
 
@@ -45,6 +46,7 @@ public class AddSecretController {
             schema=@Schema(implementation=ErrorDto.class)
         ))
     })
+    @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequest body, @AuthenticationPrincipal User user, HttpServletRequest request) {
         String secret = body.secret();

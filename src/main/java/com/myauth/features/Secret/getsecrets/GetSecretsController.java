@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myauth.config.versioning.ApiVersion;
 import com.myauth.features.Secret.getsecrets.GetSecretsResponse.SecretDto;
 import com.myauth.infrastructure.db.entities.User;
 import com.myauth.shared.result.ErrorDto;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name="Secrets", description="Endpoints for managing user secrets")
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/auth/secrets")
+@RequestMapping("/secrets")
 public class GetSecretsController {
     private final GetSecretsHandler handler;
 
@@ -40,6 +41,7 @@ public class GetSecretsController {
             schema=@Schema(implementation=GetSecretsResponse.class)
         ))
     })
+    @ApiVersion("1")
     @GetMapping
     public ResponseEntity<?> getSecrets(@AuthenticationPrincipal User user, HttpServletRequest request) {
         Result<List<SecretDto>> result = handler.getSecretsForUser(user);
