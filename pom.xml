@@ -188,7 +188,8 @@
                         <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
                     </statelessTestsetInfoReporter>
                     <includes>
-                        <include>**/DomainTests/*/*.java</include>
+                        <include>**/DomainTests/Features/*/*.java</include>
+                        <include>**/DomainTests/Infrastructure/*/*.java</include>
                     </includes>
                 </configuration>
             </plugin>
