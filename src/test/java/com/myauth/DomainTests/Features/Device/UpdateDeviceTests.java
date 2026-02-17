@@ -1,4 +1,4 @@
-package com.myauth.DomainTests.Device;
+package com.myauth.DomainTests.Features.Device;
 
 import java.util.Optional;
 

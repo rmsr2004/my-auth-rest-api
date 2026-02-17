@@ -1,4 +1,4 @@
-package com.myauth.DomainTests.Secret;
+package com.myauth.DomainTests.Features.Secret;
 
 import java.util.Optional;
 
