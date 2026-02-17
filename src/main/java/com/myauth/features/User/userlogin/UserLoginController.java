@@ -18,12 +18,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Authentication", description="Endpoints for user authentication and login")
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/login")
@@ -36,10 +38,6 @@ public class UserLoginController {
             mediaType="application/json",
             schema=@Schema(implementation=LoginResponse.class)
         )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
         @ApiResponse(responseCode="403", description="User credentials are invalid", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=ErrorDto.class)
@@ -47,10 +45,6 @@ public class UserLoginController {
         @ApiResponse(responseCode="404", description="User not found", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation=ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
         ))
     })
     @PutMapping

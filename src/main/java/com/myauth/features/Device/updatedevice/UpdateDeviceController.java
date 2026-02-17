@@ -17,22 +17,50 @@ import com.myauth.common.utils.Result;
 import com.myauth.infrastructure.db.entities.Device;
 import com.myauth.infrastructure.db.entities.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Device Management", description="Endpoints for managing user devices")
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/auth/devices")
 public class UpdateDeviceController {
     private final UpdateDeviceHandler handler;
 
+    @Operation(summary="Updates a device for a specific user")
+    @Parameter(name="deviceId", description="Unique identifier of the device to be updated", example="device123", required=true)
+    @ApiResponses(value={
+        @ApiResponse(responseCode="200", description="Device updated successfully", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation=UpdateDeviceResponse.class)
+        )),
+        @ApiResponse(responseCode="404", description="Device not found", content=@Content(
+            mediaType="application/json",
+            schema=@Schema(implementation = ErrorDto.class)
+        ))
+    })
     @PutMapping("/{deviceId}")
     public ResponseEntity<?> updateDevice(
         @AuthenticationPrincipal User user,
         @PathVariable String deviceId,
+        @Parameter(
+            name = "Device-Id", 
+            description = "Unique identifier for the device making the request", 
+            example = "device-123-abc", 
+            required = true,
+            in = ParameterIn.HEADER
+        )
         @RequestHeader("Device-Id") String currentDeviceId,
         @RequestBody @Valid UpdateDeviceRequest body,
         HttpServletRequest request

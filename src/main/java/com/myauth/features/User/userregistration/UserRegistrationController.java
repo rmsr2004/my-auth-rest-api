@@ -18,12 +18,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Tag(name="Authentication", description="Endpoints for user registration and account creation")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth/register")
@@ -36,15 +38,7 @@ public class UserRegistrationController {
             mediaType="application/json",
             schema=@Schema(implementation = RegisterResponse.class)
         )),
-        @ApiResponse(responseCode="400", description="Bad Request", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
         @ApiResponse(responseCode="409", description="User are already registered", content=@Content(
-            mediaType="application/json",
-            schema=@Schema(implementation = ErrorDto.class)
-        )),
-        @ApiResponse(responseCode="500", description="Internal Server Error", content=@Content(
             mediaType="application/json",
             schema=@Schema(implementation = ErrorDto.class)
         ))
