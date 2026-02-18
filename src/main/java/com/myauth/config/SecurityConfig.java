@@ -37,6 +37,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/error").permitAll()
+                .requestMatchers(HttpMethod.GET, "/openapi.json").permitAll()
+                .requestMatchers(HttpMethod.GET, "/scalar/**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(e -> e

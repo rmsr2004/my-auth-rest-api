@@ -124,6 +124,16 @@
             <artifactId>gson</artifactId>
             <version>2.13.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.scalar.maven</groupId>
+            <artifactId>scalar-webmvc</artifactId>
+            <version>0.5.50</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scalar.maven</groupId>
+            <artifactId>scalar-core</artifactId>
+            <version>0.5.50</version>
+        </dependency>
     </dependencies>
 
     <build>
