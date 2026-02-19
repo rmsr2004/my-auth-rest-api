@@ -18,7 +18,8 @@ jobs:
         POSTGRES_USER: test
         POSTGRES_PASSWORD: test
         JWT_SECRET: testkey
-
+        FRONTEND_URL: http://localhost:3000
+        
     services:
       postgres:
         image: postgres:16-alpine
@@ -54,6 +55,8 @@ jobs:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           JWT_SECRET: testkey
+          JWT_EXPIRATION_MS: 2592000000
+          FRONTEND_URL: http://localhost:3000
 
       - name: Check docker-compose up
         run: docker compose -f docker-compose.yml up -d --build
