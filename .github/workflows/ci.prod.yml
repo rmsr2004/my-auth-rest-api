@@ -28,7 +28,7 @@ jobs:
           POSTGRES_PASSWORD: test
           POSTGRES_DB: testdb
         ports:
-          - 5433:5433
+          - 5432:5432
         options: >-
           --health-cmd="pg_isready -U test -d testdb"
           --health-interval=5s
@@ -51,7 +51,7 @@ jobs:
       - name: Unit & Integration Tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5433/testdb
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           JWT_SECRET: testkey
