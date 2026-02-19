@@ -3,13 +3,14 @@ package com.myauth.DomainTests.Infrastructure.Security;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Password Encoder Tests")
 class PasswordEncoderTests {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
     @DisplayName("Should encode password correctly (Results should be different for same input due to salt)")
