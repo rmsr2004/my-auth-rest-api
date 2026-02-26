@@ -13,7 +13,7 @@ public record LoginRequest(
     @Schema(description="The user's password", example="P@ssw0rd!")
     String password
 ) {
-    public User toUser() {
+    public User toEntity() {
         User user = new User();
         user.setUsername(this.username);
         user.setPassword(this.password);

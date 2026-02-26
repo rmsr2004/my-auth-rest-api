@@ -67,7 +67,9 @@ public class UpdateDeviceController {
         @RequestBody @Valid UpdateDeviceRequest body,
         HttpServletRequest request
     ) {
-        Result<Device> result = handler.updateDeviceForUser(deviceId, user, currentDeviceId, body);
+        Device device = body.toEntity();
+
+        Result<Device> result = handler.updateDeviceForUser(deviceId, user, currentDeviceId, device);
 
         if (result.isFailure()) {
             log.warn("Failed to update device with ID: {} for user: {} | Reason: {}", deviceId, user.getUsername(), result.getError());

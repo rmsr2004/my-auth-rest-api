@@ -49,7 +49,9 @@ public class AddDeviceController {
     @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> addDevice(@Valid @RequestBody AddDeviceRequest body, @AuthenticationPrincipal User user, HttpServletRequest request) {
-        Result<Device> result = handler.addDevice(user, body.id(), body.name());
+        Device device = body.toEntity();
+
+        Result<Device> result = handler.addDevice(user, device);
 
         if (result.isFailure()) {
             log.warn("Failed to add device for user: {} | Reason: {}", user.getUsername(), result.getError());

@@ -61,19 +61,20 @@ class UpdateDeviceTests {
     @DisplayName("Should update device name successfully when requester is admin")
     void shouldUpdateName_WhenRequesterIsAdmin() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+        Device device = new Device();
+        device.setName("New Name");
+        device.setIsAdmin(null);
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.of(targetDevice));
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getValue().getName()).isEqualTo("New Name");
         
-        // Verifica se salvou
         verify(deviceRepository).save(targetDevice);
         verify(deviceRepository, never()).save(adminDevice);
     }
@@ -82,13 +83,16 @@ class UpdateDeviceTests {
     @DisplayName("Should transfer admin status successfully")
     void shouldUpdateAdminStatus_WhenRequested() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest(null, true);
+        Device device = new Device();
+        device.setName(null);
+        device.setIsAdmin(true);
+
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.of(targetDevice));
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
@@ -103,13 +107,16 @@ class UpdateDeviceTests {
     @DisplayName("Should update both name and admin status")
     void shouldUpdateNameAndAdmin_WhenBothProvided() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest("Super Phone", true);
+        Device device = new Device();
+        device.setName("Super Phone");
+        device.setIsAdmin(true);
+
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.of(targetDevice));
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
@@ -125,17 +132,19 @@ class UpdateDeviceTests {
     @DisplayName("Should not update name if provided name is empty or blank")
     void shouldNotUpdateName_WhenNameIsBlank() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest("   ", null); // Nome em branco
+        Device device = new Device();
+        device.setName("   ");
+        device.setIsAdmin(null);
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.of(targetDevice));
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.getValue().getName()).isEqualTo("Old Name"); // Mantém o antigo
+        assertThat(result.getValue().getName()).isEqualTo("Old Name");
         verify(deviceRepository).save(targetDevice);
     }
 
@@ -143,12 +152,14 @@ class UpdateDeviceTests {
     @DisplayName("Should return DEVICE_NOT_FOUND when current device (header) does not exist")
     void shouldReturnError_WhenCurrentDeviceNotFound() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+        Device device = new Device();
+        device.setName("New Name");
+        device.setIsAdmin(null);
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.empty());
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isFailure()).isTrue();
@@ -160,13 +171,16 @@ class UpdateDeviceTests {
     @DisplayName("Should return DEVICE_NOT_FOUND when target device does not exist")
     void shouldReturnError_WhenTargetDeviceNotFound() {
         // Arrange
-        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+        Device device = new Device();
+        device.setName("New Name");
+        device.setIsAdmin(null);
+
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.empty());
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isFailure()).isTrue();
@@ -178,14 +192,16 @@ class UpdateDeviceTests {
     @DisplayName("Should return DEVICE_FORBIDDEN when current device is not Admin")
     void shouldReturnError_WhenRequesterIsNotAdmin() {
         // Arrange
-        adminDevice.setIsAdmin(false); // O requester não é admin
-        UpdateDeviceRequest request = new UpdateDeviceRequest("New Name", null);
+        adminDevice.setIsAdmin(false);
+        Device device = new Device();
+        device.setName("New Name");
+        device.setIsAdmin(null);
 
         when(deviceRepository.findByUserAndId(user, ADMIN_DEVICE_ID)).thenReturn(Optional.of(adminDevice));
         when(deviceRepository.findByUserAndId(user, TARGET_DEVICE_ID)).thenReturn(Optional.of(targetDevice));
 
         // Act
-        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, request);
+        Result<Device> result = handler.updateDeviceForUser(TARGET_DEVICE_ID, user, ADMIN_DEVICE_ID, device);
 
         // Assert
         assertThat(result.isFailure()).isTrue();
