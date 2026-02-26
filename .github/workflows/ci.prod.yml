@@ -51,7 +51,7 @@ jobs:
       - name: Unit & Integration Tests
         run: mvn clean verify -Dmaven.compiler.failOnWarning=false
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5433/testdb
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
           JWT_SECRET: testkey
