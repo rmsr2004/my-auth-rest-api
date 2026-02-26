@@ -51,7 +51,7 @@ public class UserLoginController {
     @ApiVersion("1")
     @PutMapping
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest body, HttpServletRequest request) {
-        User user = body.toUser();
+        User user = body.toEntity();
         
         Result<String> result = handler.login(user);
 

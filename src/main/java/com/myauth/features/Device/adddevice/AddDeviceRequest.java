@@ -1,5 +1,6 @@
 package com.myauth.features.Device.adddevice;
 
+import com.myauth.infrastructure.db.entities.Device;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
@@ -10,4 +11,11 @@ public record AddDeviceRequest(
     @NotBlank(message="Name must not be blank")
     @Schema(description="User-friendly name for the device", example="John's iPhone")
     String name
-) {}
+) {
+    public Device toEntity() {
+        Device device = new Device();
+        device.setId(this.id);
+        device.setName(this.name);
+        return device;
+    }
+}

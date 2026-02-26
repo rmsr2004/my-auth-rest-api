@@ -19,7 +19,7 @@ public class UpdateDeviceHandler {
         String deviceIdToUpdate, 
         User user, 
         String currentDeviceId, 
-        UpdateDeviceRequest body
+        Device device
     ) {
         Device currentDevice = repository.findByUserAndId(user, currentDeviceId).orElse(null);
         if (currentDevice == null) {
@@ -35,12 +35,12 @@ public class UpdateDeviceHandler {
             return Result.failure(Errors.DEVICE_FORBIDDEN);
         }
 
-        if (body.name() != null && !body.name().trim().isEmpty()) {
-            deviceToUpdate.setName(body.name());
+        if (device.getName() != null && !device.getName().trim().isEmpty()) {
+            deviceToUpdate.setName(device.getName());
         }
 
-        if (body.isAdmin() != null) {
-            deviceToUpdate.setIsAdmin(body.isAdmin());
+        if (device.getIsAdmin() != null) {
+            deviceToUpdate.setIsAdmin(device.getIsAdmin());
             currentDevice.setIsAdmin(false);
             repository.save(currentDevice);
         }

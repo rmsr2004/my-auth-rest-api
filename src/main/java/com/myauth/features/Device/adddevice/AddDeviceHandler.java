@@ -15,15 +15,12 @@ import lombok.AllArgsConstructor;
 public class AddDeviceHandler {
     private final IDeviceRepository repository;
 
-    public Result<Device> addDevice(User user, String id, String name) {
-        if (repository.existsByUserAndId(user, id)) {
+    public Result<Device> addDevice(User user, Device device) {
+        if (repository.existsByUserAndId(user, device.getId())) {
             return Result.failure(Errors.DEVICE_ALREADY_EXISTS);
         }
 
-        Device device = new Device();
         device.setUser(user);
-        device.setId(id);
-        device.setName(name);
         device.setIsAdmin(false);
 
         if (repository.findAllByUserId(user.getId()).isEmpty()) {

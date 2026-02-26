@@ -15,18 +15,14 @@ import lombok.AllArgsConstructor;
 public class AddSecretHandler {
     private final ISecretRepository repository;
 
-    public Result<Secret> addSecret(User user, String secret, String issuer) {
-        if (repository.findByUserAndIssuer(user, issuer).isPresent()) {
+    public Result<Secret> addSecret(User user, Secret secret) {
+        if (repository.findByUserAndIssuer(user, secret.getIssuer()).isPresent()) {
             return Result.failure(Errors.ISSUER_ALREADY_EXISTS);
         }
 
-        Secret secretEntity = new Secret();
-        secretEntity.setIssuer(issuer);
-        secretEntity.setSecret(secret);
-        secretEntity.setUser(user);
-        
-        repository.save(secretEntity);
+        secret.setUser(user);
+        repository.save(secret);
 
-        return Result.success(secretEntity);
+        return Result.success(secret);
     }
 }

@@ -42,21 +42,22 @@ public class AddDeviceTests {
         // Arrange
         User user = new User();
         user.setId(1L);
-        String deviceId = "unique-id-1";
-        String name = "Pixel 8";
+        Device device = new Device();
+        device.setId("unique-id-1");
+        device.setName("Pixel 8");
 
-        when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
+        when(repository.existsByUserAndId(user, device.getId())).thenReturn(false);
         when(repository.findAllByUserId(user.getId())).thenReturn(List.of());
 
         // Act
-        Result<Device> result = handler.addDevice(user, deviceId, name);
+        Result<Device> result = handler.addDevice(user, device);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getValue()).isNotNull();
-        assertThat(result.getValue().getId()).isEqualTo(deviceId);
-        assertThat(result.getValue().getName()).isEqualTo(name);
+        assertThat(result.getValue().getId()).isEqualTo(device.getId());
+        assertThat(result.getValue().getName()).isEqualTo(device.getName());
         assertThat(result.getValue().getIsAdmin()).isTrue();
     }
 
@@ -65,21 +66,22 @@ public class AddDeviceTests {
     void shouldCreateNormalDevice_WhenDatabaseIsNotEmpty() {
         // Arrange
         User user = new User();
-        String deviceId = "unique-id-2";
-        String name = "iPhone";
+        Device device = new Device();
+        device.setId("unique-id-2");
+        device.setName("iPhone");
 
-        when(repository.existsByUserAndId(user, deviceId)).thenReturn(false);
+        when(repository.existsByUserAndId(user, device.getId())).thenReturn(false);
         when(repository.findAllByUserId(user.getId())).thenReturn(List.of(new Device()));
 
         // Act
-        Result<Device> result = handler.addDevice(user, deviceId, name);
+        Result<Device> result = handler.addDevice(user, device);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getValue()).isNotNull();
-        assertThat(result.getValue().getId()).isEqualTo(deviceId);
-        assertThat(result.getValue().getName()).isEqualTo(name);
+        assertThat(result.getValue().getId()).isEqualTo(device.getId());
+        assertThat(result.getValue().getName()).isEqualTo(device.getName());
         assertThat(result.getValue().getIsAdmin()).isFalse();
     }
 
@@ -88,13 +90,14 @@ public class AddDeviceTests {
     void shouldReturnError_WhenDeviceAlreadyExists() {
         // Arrange
         User user = new User();
-        String deviceId = "existing-id";
-        String name = "Name";
+        Device device = new Device();
+        device.setId("existing-id");
+        device.setName("Name");
 
-        when(repository.existsByUserAndId(user, deviceId)).thenReturn(true);
+        when(repository.existsByUserAndId(user, device.getId())).thenReturn(true);
 
         // Act
-        Result<Device> result = handler.addDevice(user, deviceId, name);
+        Result<Device> result = handler.addDevice(user, device);
 
         // Assert
         assertThat(result).isNotNull();

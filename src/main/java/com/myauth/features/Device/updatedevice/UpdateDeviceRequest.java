@@ -1,5 +1,6 @@
 package com.myauth.features.Device.updatedevice;
 
+import com.myauth.infrastructure.db.entities.Device;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 
@@ -9,4 +10,11 @@ public record UpdateDeviceRequest(
     @AssertTrue(message="isAdmin must be true")
     @Schema(description="Whether the device should have admin privileges", example="true")
     Boolean isAdmin
-) {};
+) {
+    public Device toEntity() {
+        Device device = new Device();
+        device.setName(this.name);
+        device.setIsAdmin(this.isAdmin);
+        return device;
+    }
+}

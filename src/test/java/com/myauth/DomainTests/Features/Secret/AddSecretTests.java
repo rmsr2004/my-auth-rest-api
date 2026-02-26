@@ -38,19 +38,20 @@ class AddSecretTests {
     public void AddSecret_ShouldReturnSuccess_WhenRequestIsValid() {
         // Arrange
         User user = new User();
-        String secret = "secret";
-        String issuer = "issuer";
+        Secret secret = new Secret();
+        secret.setSecret("secret");
+        secret.setIssuer("issuer");
 
-        when(secretRepository.findByUserAndIssuer(user, issuer)).thenReturn(Optional.empty());
+        when(secretRepository.findByUserAndIssuer(user, secret.getIssuer())).thenReturn(Optional.empty());
         
         // Act
-        Result<Secret> result = handler.addSecret(user, secret, issuer);
+        Result<Secret> result = handler.addSecret(user, secret);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getValue()).isNotNull();
-        assertThat(result.getValue().getIssuer()).isEqualTo(issuer);
+        assertThat(result.getValue().getIssuer()).isEqualTo(secret.getIssuer());
     }
 
     @Test
@@ -58,13 +59,14 @@ class AddSecretTests {
     public void AddSecret_ShouldReturnFailure_WhenIssuerAlreadyExists() {
         // Arrange
         User user = new User();
-        String secret = "secret";
-        String issuer = "issuer";
+        Secret secret = new Secret();
+        secret.setSecret("secret");
+        secret.setIssuer("issuer");
 
-        when(secretRepository.findByUserAndIssuer(user, issuer)).thenReturn(Optional.of(new Secret()));
+        when(secretRepository.findByUserAndIssuer(user, secret.getIssuer())).thenReturn(Optional.of(new Secret()));
 
         // Act
-        Result<Secret> result = handler.addSecret(user, secret, issuer);
+        Result<Secret> result = handler.addSecret(user, secret);
 
         // Assert
         assertThat(result).isNotNull();

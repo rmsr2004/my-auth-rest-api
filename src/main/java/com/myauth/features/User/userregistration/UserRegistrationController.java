@@ -47,7 +47,7 @@ public class UserRegistrationController {
     @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest body, HttpServletRequest request) {
-        User user = body.toUser();
+        User user = body.toEntity();
         
         Result<User> result = handler.register(user);
         

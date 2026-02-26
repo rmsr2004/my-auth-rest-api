@@ -1,5 +1,6 @@
 package com.myauth.features.Device.updatedevice;
 
+import com.myauth.infrastructure.db.entities.Device;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record UpdateDeviceResponse(

@@ -49,10 +49,9 @@ public class AddSecretController {
     @ApiVersion("1")
     @PostMapping
     public ResponseEntity<?> addSecret(@Valid @RequestBody AddSecretRequest body, @AuthenticationPrincipal User user, HttpServletRequest request) {
-        String secret = body.secret();
-        String issuer = body.issuer();
+        Secret secret = body.toEntity();
 
-        Result<Secret> result = handler.addSecret(user, secret, issuer);
+        Result<Secret> result = handler.addSecret(user, secret);
 
         if (result.isFailure()) {
             log.warn("Failed to add secret for user: {} | Reason: {}", user.getUsername(), result.getError());
