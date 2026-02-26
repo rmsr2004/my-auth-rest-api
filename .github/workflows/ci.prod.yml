@@ -58,6 +58,9 @@ jobs:
           JWT_EXPIRATION_MS: 2592000000
           FRONTEND_URL: http://localhost:3000
 
+      - name: Stop testing database to free port 5432
+        run: docker stop $(docker ps -q --filter ancestor=postgres:16-alpine) || true
+
       - name: Check docker-compose up
         run: docker compose -f docker-compose.yml up -d --build
 
