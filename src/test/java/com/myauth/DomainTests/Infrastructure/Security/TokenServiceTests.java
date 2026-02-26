@@ -1,33 +1,40 @@
 package com.myauth.DomainTests.Infrastructure.Security;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.myauth.infrastructure.db.entities.User;
-import com.myauth.infrastructure.db.repositories.IUserRepository;
 import com.myauth.infrastructure.security.TokenService;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Token Service Tests")
 class TokenServiceTests {
-    @Autowired
     private TokenService tokenService;
 
-    @Autowired
-    private IUserRepository userRepository;
+    @BeforeEach
+    @SuppressWarnings("unused")
+    void setUp() {
+        tokenService = new TokenService();
+
+        ReflectionTestUtils.setField(tokenService, "secret", "um-segredo-muito-seguro-com-mais-de-256-bits-para-o-jwt");
+        
+        ReflectionTestUtils.setField(tokenService, "expirationDate", 3600000L); 
+    }
 
     @Test
     @DisplayName("Should generate a valid token for a user")
     void shouldGenerateToken() {
         User user = new User();
+        user.setId(1L);
         user.setUsername("testuser");
         user.setPassword("example");
-        userRepository.save(user);
 
         String token = tokenService.generateToken(user);
 
@@ -39,15 +46,15 @@ class TokenServiceTests {
     @DisplayName("Should validate a valid token and return username")
     void shouldValidateToken() {
         User user = new User();
+        user.setId(1L);
         user.setUsername("validUser");
         user.setPassword("example");
-        userRepository.save(user);
 
         String token = tokenService.generateToken(user);
 
         Long subject = tokenService.validateToken(token);
 
-        assertThat(subject).isEqualTo(userRepository.findByUsername("validUser").get().getId());
+        assertThat(subject).isEqualTo(1L);
     }
 
     @Test
